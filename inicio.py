@@ -37,7 +37,7 @@ def cargar_archivo():
     st.markdown("""
 
     ### Aplicación de Predicción de Abandono de Clientes 
-    Elaborado por Est. ### Harlys Rivas Perea ###
+    Elaborado por Est. ### Harlys Rivas Perea ### siguiendo las instrucciones del profesor ## David Andrés Soler#
 
     Esta herramienta te ayudará a identificar a los clientes que tienen más probabilidades de abandonar tu negocio.
 
