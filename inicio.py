@@ -36,13 +36,12 @@ def cargar_archivo():
 
     st.markdown("""
 
-    ### Aplicación de Predicción de Abandono de Clientes
+    ### Aplicación de Predicción de Abandono de Clientes 
+    Elaborado por Est. Harlys Rivas Perea
 
-    Esta herramienta te ayudará a identificar a los clientes
-    que tienen más probabilidades de abandonar tu negocio.
+    Esta herramienta te ayudará a identificar a los clientes que tienen más probabilidades de abandonar tu negocio.
 
-    La aplicación utiliza un modelo de Machine Learning
-    entrenado para analizar patrones en los datos.
+    La aplicación utiliza un modelo de Machine Learning entrenado para analizar patrones en los datos.
 
     ### Para comenzar:
 
