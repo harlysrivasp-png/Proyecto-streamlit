@@ -1,0 +1,51 @@
+Genero,PersonaMayor,Socio,Dependientes,Permanencia,ServicioTelefonico,VariasLineas,ServicioInternet,SeguridadLinea,CopiaSeguridadLinea,ProteccionDispositivo,ServicioTecnico,ServicioTV,ServicioPeliculas,Contrato,FacturacionElectronica,MetodoPago,RecargoMensual,TotalRecargo
+Masculino,1,No,No,51,Si,No,Fibra Óptica,No,No,Si,No,Si,Si,un anio,Si,Transferencia bancaria (automática),94.0,4905.75
+Femenino,0,No,No,72,Si,Si,Fibra Óptica,Si,Si,Si,Si,Si,Si,dos anios,Si,Tarjeta de crédito (automática),112.75,8192.6
+Masculino,0,Si,No,72,Si,No,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,dos anios,No,Tarjeta de crédito (automática),19.7,1421.9
+Masculino,0,Si,Si,63,Si,Si,Fibra Óptica,No,Si,Si,No,Si,Si,dos anios,Si,Transferencia bancaria (automática),104.8,6597.25
+Masculino,0,Si,No,32,Si,Si,Fibra Óptica,No,Si,No,No,Si,Si,Mensual,Si,Tarjeta de crédito (automática),98.85,3145.9
+Masculino,0,Si,Si,47,Si,Si,DSL,No,Si,No,No,No,No,Mensual,No,Cheque Electrónico,54.25,2538.2
+Femenino,0,Si,No,72,Si,No,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,dos anios,No,Tarjeta de crédito (automática),20.5,1502.25
+Masculino,1,No,No,18,Si,Si,DSL,Si,Si,No,No,No,No,Mensual,Si,Tarjeta de crédito (automática),58.4,964.9
+Femenino,0,Si,No,19,Si,No,Fibra Óptica,Si,No,No,No,No,No,Mensual,Si,Cheque Electrónico,73.2,1441.1
+Femenino,1,No,No,54,Si,Si,Fibra Óptica,No,Si,No,No,No,No,Mensual,Si,Cheque Electrónico,79.5,4370.25
+Masculino,0,Si,Si,10,Si,No,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,un anio,No,Cheque por Correo,20.45,242.4
+Masculino,1,Si,No,13,Si,Si,Fibra Óptica,Si,Si,No,No,No,Si,Mensual,No,Tarjeta de crédito (automática),93.8,1261.0
+Masculino,0,No,Si,69,Si,Si,DSL,Si,Si,Si,Si,Si,No,dos anios,Si,Tarjeta de crédito (automática),79.45,5502.55
+Masculino,0,No,Si,29,Si,Si,Fibra Óptica,No,Si,Si,Si,No,Si,un anio,No,Tarjeta de crédito (automática),100.55,2830.45
+Femenino,0,No,No,1,Si,No,Fibra Óptica,No,No,No,No,Si,No,Mensual,Si,Cheque Electrónico,79.65,79.65
+Masculino,0,No,No,20,No,Sin Servicio Telefónico,DSL,Si,Si,Si,Si,Si,No,Mensual,Si,Tarjeta de crédito (automática),55.0,1165.55
+Femenino,1,Si,No,1,Si,No,DSL,No,No,No,No,No,No,Mensual,No,Cheque Electrónico,46.0,46.0
+Masculino,0,Si,Si,35,Si,No,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,dos anios,No,Transferencia bancaria (automática),20.5,759.35
+Femenino,0,No,No,9,No,Sin Servicio Telefónico,DSL,No,Si,No,No,No,Si,Mensual,No,Cheque Electrónico,40.75,359.4
+Masculino,0,No,No,71,Si,No,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,dos anios,Si,Tarjeta de crédito (automática),19.9,1355.1
+Femenino,0,Si,Si,17,Si,No,DSL,Si,Si,No,No,Si,Si,Mensual,No,Cheque por Correo,74.55,1215.8
+Femenino,1,Si,No,50,Si,No,Fibra Óptica,No,No,No,No,No,No,Mensual,Si,Cheque Electrónico,71.05,3444.85
+Femenino,0,No,No,45,Si,No,DSL,Si,Si,No,Si,No,No,un anio,Si,Tarjeta de crédito (automática),62.55,2796.45
+Femenino,0,No,Si,1,Si,Si,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Mensual,No,Cheque por Correo,25.4,25.4
+Femenino,0,No,No,5,Si,No,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,un anio,No,Cheque Electrónico,19.55,99.6
+Masculino,1,Si,Si,64,Si,Si,Fibra Óptica,Si,No,Si,Si,Si,Si,dos anios,Si,Transferencia bancaria (automática),111.6,7099.0
+Masculino,0,Si,Si,4,Si,No,DSL,No,No,No,Si,No,Si,Mensual,No,Tarjeta de crédito (automática),61.45,229.55
+Femenino,0,No,No,12,Si,No,DSL,No,No,No,No,No,No,Mensual,Si,Transferencia bancaria (automática),45.0,524.35
+Femenino,0,Si,Si,50,Si,Si,Fibra Óptica,No,No,No,No,Si,No,Mensual,Si,Transferencia bancaria (automática),84.4,4116.15
+Masculino,0,Si,No,38,Si,Si,DSL,No,No,Si,Si,No,Si,un anio,No,Tarjeta de crédito (automática),69.0,2669.45
+Femenino,0,No,No,1,Si,No,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Mensual,No,Cheque por Correo,20.5,20.5
+Femenino,0,No,No,28,Si,No,DSL,No,Si,No,Si,No,No,Mensual,No,Transferencia bancaria (automática),54.65,1517.5
+Femenino,0,Si,Si,45,Si,Si,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,dos anios,Si,Transferencia bancaria (automática),24.65,1138.8
+Masculino,0,Si,Si,45,Si,Si,DSL,No,Si,Si,No,Si,Si,un anio,No,Tarjeta de crédito (automática),78.75,3600.65
+Masculino,0,No,No,52,Si,No,Fibra Óptica,Si,No,Si,No,Si,No,un anio,No,Cheque Electrónico,91.25,4738.3
+Masculino,0,No,No,2,No,Sin Servicio Telefónico,DSL,No,No,No,No,No,No,Mensual,Si,Cheque Electrónico,25.05,56.35
+Femenino,0,Si,No,36,Si,Si,Fibra Óptica,Si,Si,Si,Si,No,Si,dos anios,Si,Tarjeta de crédito (automática),106.05,3834.4
+Masculino,0,No,No,23,Si,No,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,un anio,No,Transferencia bancaria (automática),20.15,405.6
+Masculino,0,Si,Si,42,Si,Si,DSL,Si,Si,No,No,Si,No,Mensual,Si,Transferencia bancaria (automática),69.4,3058.3
+Femenino,0,Si,Si,46,Si,No,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,dos anios,No,Transferencia bancaria (automática),20.25,890.35
+Femenino,0,Si,No,18,Si,No,Fibra Óptica,Si,No,No,No,No,No,Mensual,No,Cheque Electrónico,74.8,1438.05
+Femenino,0,Si,Si,48,Si,Si,Fibra Óptica,Si,Si,No,No,Si,Si,un anio,Si,Tarjeta de crédito (automática),103.25,5037.55
+Femenino,0,No,No,42,Si,No,DSL,No,No,Si,Si,No,Si,dos anios,No,Tarjeta de crédito (automática),66.5,2762.75
+Masculino,0,No,No,1,Si,No,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Mensual,Si,Transferencia bancaria (automática),20.2,20.2
+Femenino,0,No,No,7,Si,No,Fibra Óptica,No,No,No,No,Si,No,Mensual,Si,Cheque por Correo,80.3,526.7
+Femenino,0,Si,Si,6,Si,No,DSL,No,No,No,No,Si,No,Mensual,No,Cheque Electrónico,54.85,355.1
+Masculino,1,Si,No,34,Si,Si,Fibra Óptica,No,No,No,No,No,No,Mensual,Si,Cheque Electrónico,75.55,2425.4
+Femenino,0,No,No,13,Si,No,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,un anio,No,Cheque Electrónico,19.65,244.8
+Masculino,1,Si,No,37,Si,No,Fibra Óptica,No,No,No,No,No,No,Mensual,Si,Transferencia bancaria (automática),72.25,2575.45
+Masculino,0,No,No,1,Si,Si,No,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Sin Servicio de Internet,Mensual,Si,Cheque por Correo,25.0,25.0

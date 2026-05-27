@@ -1,0 +1,201 @@
+ID;Vendedor;Ciudad;Producto;Precio;Fecha;Forma de pago
+1;Maca Prabo;Cali;M¢vil;250;16/09/2024;Cr‚dito
+2;Maca Prabo;Cali;Tablet;350;12/02/2024;Contado
+3;Merk Adona;Palmira;PS4;400;6/09/2024;Contado
+4;Carl Refur;Buenaventura;Tablet;350;18/06/2024;Cr‚dito
+5;Merk Adona;Palmira;Anti-Virus;130;8/08/2024;Contado
+6;Mikal Campo;Cartago;Auriculares;25;22/02/2024;Contado
+7;Maca Prabo;Cali;PS4;400;12/05/2024;Contado
+8;Mikal Campo;Cartago;PC;600;27/12/2024;Cr‚dito
+9;Mikal Campo;Cartago;Anti-Virus;130;9/01/2024;Contado
+10;Mikal Campo;Cartago;PS4;400;7/08/2024;Cr‚dito
+11;Hasan Chezro Mero;Buenaventura;Anti-Virus;130;8/02/2024;Contado
+12;Merk Adona;Palmira;Auriculares;25;7/02/2024;Contado
+13;Mikal Campo;Cartago;PC;600;24/12/2024;Cr‚dito
+14;Carl Refur;Buenaventura;PS4;400;15/02/2024;Cr‚dito
+15;Hasan Chezro Mero;Buenaventura;PS4;400;24/11/2024;Cr‚dito
+16;Carl Refur;Buenaventura;PS4;400;3/04/2024;Cr‚dito
+17;Hasan Chezro Mero;Buenaventura;Auriculares;25;23/01/2024;Cr‚dito
+18;Merk Adona;Palmira;Anti-Virus;130;24/09/2024;Contado
+19;Carl Refur;Buenaventura;M¢vil;250;22/04/2024;Cr‚dito
+20;Hasan Chezro Mero;Buenaventura;M¢vil;250;6/09/2024;Cr‚dito
+21;Hasan Chezro Mero;Buenaventura;PC;600;13/01/2024;Cr‚dito
+22;Merk Adona;Palmira;PS4;400;2/07/2024;Cr‚dito
+23;Mikal Campo;Tulu ;Auriculares;25;3/11/2024;Contado
+24;Merk Adona;Cali;Auriculares;25;31/08/2024;Cr‚dito
+25;Merk Adona;Palmira;PS4;400;24/06/2024;Cr‚dito
+26;Hasan Chezro Mero;Buenaventura;Anti-Virus;130;19/03/2024;Cr‚dito
+27;Merk Adona;Palmira;Anti-Virus;130;2/10/2024;Cr‚dito
+28;Hasan Chezro Mero;Buenaventura;M¢vil;250;15/03/2024;Cr‚dito
+29;Merk Adona;Palmira;M¢vil;250;27/10/2024;Contado
+30;Mikal Campo;Tulu ;Anti-Virus;130;22/01/2024;Cr‚dito
+31;Mikal Campo;Tulu ;PC;600;15/11/2024;Cr‚dito
+32;Carl Refur;Buenaventura;Anti-Virus;130;5/07/2024;Cr‚dito
+33;Carl Refur;Buenaventura;Tablet;350;16/09/2024;Cr‚dito
+34;Maca Prabo;Cali;Anti-Virus;130;4/06/2024;Contado
+35;Carl Refur;Buenaventura;PS4;400;23/09/2024;Contado
+36;Carl Refur;Buenaventura;PC;600;16/07/2024;Contado
+37;Maca Prabo;Cali;M¢vil;250;19/01/2024;Contado
+38;Maca Prabo;Cali;PS4;400;8/01/2024;Contado
+39;Maca Prabo;Cali;Tablet;350;19/03/2024;Contado
+40;Hasan Chezro Mero;Buenaventura;Tablet;350;1/01/2024;Contado
+41;Maca Prabo;Cali;M¢vil;250;9/06/2024;Contado
+42;Merk Adona;Palmira;Auriculares;25;30/11/2024;Contado
+43;Mikal Campo;Tulu ;PS4;400;31/01/2024;Cr‚dito
+44;Mikal Campo;Tulu ;PC;600;1/08/2024;Contado
+45;Carl Refur;Buenaventura;Auriculares;25;6/10/2024;Contado
+46;Maca Prabo;Cali;Tablet;350;15/10/2024;Contado
+47;Carl Refur;Buenaventura;Tablet;350;2/12/2024;Cr‚dito
+48;Merk Adona;Palmira;Anti-Virus;130;22/06/2024;Contado
+49;Mikal Campo;Tulu ;PS4;400;31/05/2024;Contado
+50;Hasan Chezro Mero;Buenaventura;Auriculares;25;24/11/2024;Contado
+51;Mikal Campo;Tulu ;PS4;400;18/10/2024;Cr‚dito
+52;Merk Adona;Palmira;Auriculares;25;20/06/2024;Cr‚dito
+53;Mikal Campo;Tulu ;PC;600;5/09/2024;Contado
+54;Mikal Campo;Tulu ;Auriculares;25;5/02/2024;Cr‚dito
+55;Carl Refur;Cali;PS4;400;3/07/2024;Cr‚dito
+56;Merk Adona;Palmira;PC;600;29/09/2024;Cr‚dito
+57;Hasan Chezro Mero;Buenaventura;M¢vil;250;22/02/2024;Cr‚dito
+58;Mikal Campo;Cartago;Auriculares;25;13/12/2024;Contado
+59;Merk Adona;Palmira;PC;600;23/05/2024;Cr‚dito
+60;Mikal Campo;Cartago;M¢vil;250;31/03/2024;Cr‚dito
+61;Merk Adona;Cali;Anti-Virus;130;10/06/2024;Cr‚dito
+62;Merk Adona;Cali;Auriculares;25;11/09/2024;Contado
+63;Mikal Campo;Cartago;Auriculares;25;7/12/2024;Cr‚dito
+64;Hasan Chezro Mero;Buenaventura;PS4;400;30/10/2024;Cr‚dito
+65;Maca Prabo;Cali;M¢vil;250;24/04/2024;Cr‚dito
+66;Hasan Chezro Mero;Buenaventura;PS4;400;31/01/2024;Cr‚dito
+67;Mikal Campo;Cartago;PS4;400;13/06/2024;Contado
+68;Maca Prabo;Cali;Anti-Virus;130;17/01/2024;Contado
+69;Maca Prabo;Cali;Anti-Virus;130;8/07/2024;Contado
+70;Merk Adona;Cali;Tablet;350;14/01/2024;Contado
+71;Merk Adona;Cali;Anti-Virus;130;31/07/2024;Cr‚dito
+72;Hasan Chezro Mero;Cali;M¢vil;250;8/11/2024;Contado
+73;Carl Refur;Cali;PS4;400;21/07/2024;Contado
+74;Carl Refur;Cali;M¢vil;250;24/10/2024;Contado
+75;Merk Adona;Cali;Tablet;350;1/08/2024;Contado
+76;Hasan Chezro Mero;Cali;Anti-Virus;130;29/05/2024;Contado
+77;Maca Prabo;Tulu ;M¢vil;250;15/04/2024;Cr‚dito
+78;Hasan Chezro Mero;Cali;Auriculares;25;17/03/2024;Contado
+79;Carl Refur;Cali;PC;600;19/02/2024;Contado
+80;Hasan Chezro Mero;Cali;M¢vil;250;26/12/2024;Cr‚dito
+81;Carl Refur;Cali;Anti-Virus;130;1/04/2024;Contado
+82;Maca Prabo;Tulu ;Anti-Virus;130;6/10/2024;Contado
+83;Maca Prabo;Tulu ;Tablet;350;1/04/2024;Cr‚dito
+84;Mikal Campo;Cartago;PS4;400;12/08/2024;Cr‚dito
+85;Mikal Campo;Cartago;PC;600;12/09/2024;Cr‚dito
+86;Maca Prabo;Tulu ;Auriculares;25;19/08/2024;Cr‚dito
+87;Maca Prabo;Tulu ;Auriculares;25;27/11/2024;Contado
+88;Mikal Campo;Cali;M¢vil;250;9/02/2024;Cr‚dito
+89;Maca Prabo;Tulu ;PS4;400;21/10/2024;Cr‚dito
+90;Mikal Campo;Cali;PS4;400;6/06/2024;Cr‚dito
+91;Mikal Campo;Cali;Anti-Virus;130;25/04/2024;Cr‚dito
+92;Merk Adona;Cali;PC;600;30/03/2024;Cr‚dito
+93;Mikal Campo;Cali;Anti-Virus;130;29/07/2024;Cr‚dito
+94;Maca Prabo;Tulu ;Anti-Virus;130;19/08/2024;Cr‚dito
+95;Merk Adona;Cali;Tablet;350;5/10/2024;Cr‚dito
+96;Hasan Chezro Mero;Cali;PS4;400;23/10/2024;Cr‚dito
+97;Merk Adona;Cali;Anti-Virus;130;26/06/2024;Cr‚dito
+98;Hasan Chezro Mero;Cali;Tablet;350;6/07/2024;Contado
+99;Merk Adona;Cali;PC;600;25/08/2024;Cr‚dito
+100;Maca Prabo;Tulu ;Tablet;350;29/12/2024;Cr‚dito
+101;Carl Refur;Cali;Auriculares;25;2/07/2024;Cr‚dito
+102;Carl Refur;Cali;Tablet;350;11/09/2024;Contado
+103;Mikal Campo;Cali;PC;600;26/05/2024;Cr‚dito
+104;Mikal Campo;Cali;Anti-Virus;130;14/06/2024;Cr‚dito
+105;Mikal Campo;Cali;Auriculares;25;18/06/2024;Cr‚dito
+106;Carl Refur;Cali;Anti-Virus;130;15/12/2024;Cr‚dito
+107;Mikal Campo;Cali;Tablet;350;25/02/2024;Cr‚dito
+108;Carl Refur;Cali;Auriculares;25;5/05/2024;Cr‚dito
+109;Carl Refur;Cali;Auriculares;25;25/12/2024;Contado
+110;Merk Adona;Cali;Auriculares;25;21/04/2024;Contado
+111;Maca Prabo;Tulu ;PC;600;24/03/2024;Cr‚dito
+112;Maca Prabo;Cartago;M¢vil;250;15/08/2024;Contado
+113;Maca Prabo;Cartago;PC;600;16/06/2024;Contado
+114;Merk Adona;Cali;PC;600;26/04/2024;Contado
+115;Hasan Chezro Mero;Cali;PC;600;1/05/2024;Cr‚dito
+116;Carl Refur;Cali;Auriculares;25;11/03/2024;Contado
+117;Carl Refur;Cali;Tablet;350;18/09/2024;Contado
+118;Mikal Campo;Cali;PS4;400;11/01/2024;Cr‚dito
+119;Hasan Chezro Mero;Cali;PC;600;19/01/2024;Contado
+120;Carl Refur;Tulu ;PC;600;8/08/2024;Contado
+121;Merk Adona;Cali;PC;600;16/03/2024;Contado
+122;Maca Prabo;Cartago;Auriculares;25;20/07/2024;Cr‚dito
+123;Hasan Chezro Mero;Cali;Anti-Virus;130;8/09/2024;Contado
+124;Carl Refur;Tulu ;PC;600;30/03/2024;Contado
+125;Carl Refur;Tulu ;M¢vil;250;4/09/2024;Contado
+126;Mikal Campo;Cali;PC;600;22/02/2024;Cr‚dito
+127;Maca Prabo;Cartago;M¢vil;250;20/05/2024;Contado
+128;Mikal Campo;Cali;PS4;400;10/11/2024;Contado
+129;Hasan Chezro Mero;Cali;Anti-Virus;130;22/10/2024;Cr‚dito
+130;Merk Adona;Palmira;Anti-Virus;130;14/10/2024;Cr‚dito
+131;Merk Adona;Palmira;Anti-Virus;130;13/09/2024;Cr‚dito
+132;Merk Adona;Palmira;PS4;400;14/12/2024;Cr‚dito
+133;Mikal Campo;Cali;Tablet;350;6/02/2024;Cr‚dito
+134;Mikal Campo;Cali;Anti-Virus;130;25/05/2024;Cr‚dito
+135;Hasan Chezro Mero;Cali;Auriculares;25;7/01/2024;Cr‚dito
+136;Maca Prabo;Palmira;PS4;400;5/03/2024;Cr‚dito
+137;Maca Prabo;Palmira;Auriculares;25;1/03/2024;Cr‚dito
+138;Mikal Campo;Palmira;PS4;400;15/08/2024;Cr‚dito
+139;Merk Adona;Palmira;PC;600;10/02/2024;Cr‚dito
+140;Hasan Chezro Mero;Tulu ;PC;600;11/02/2024;Cr‚dito
+141;Merk Adona;Palmira;Anti-Virus;130;12/01/2024;Cr‚dito
+142;Maca Prabo;Palmira;Auriculares;25;10/10/2024;Contado
+143;Hasan Chezro Mero;Tulu ;Tablet;350;19/07/2024;Cr‚dito
+144;Merk Adona;Palmira;PS4;400;22/01/2024;Cr‚dito
+145;Hasan Chezro Mero;Tulu ;Auriculares;25;23/08/2024;Contado
+146;Mikal Campo;Palmira;PC;600;22/12/2024;Cr‚dito
+147;Hasan Chezro Mero;Tulu ;Tablet;350;19/06/2024;Cr‚dito
+148;Mikal Campo;Palmira;Auriculares;25;16/04/2024;Cr‚dito
+149;Carl Refur;Tulu ;PC;600;13/03/2024;Contado
+150;Hasan Chezro Mero;Tulu ;M¢vil;250;9/02/2024;Cr‚dito
+151;Hasan Chezro Mero;Tulu ;PS4;400;29/03/2024;Cr‚dito
+152;Carl Refur;Tulu ;Anti-Virus;130;25/03/2024;Cr‚dito
+153;Merk Adona;Palmira;PC;600;26/12/2024;Cr‚dito
+154;Mikal Campo;Palmira;Anti-Virus;130;23/09/2024;Contado
+155;Carl Refur;Tulu ;M¢vil;250;29/11/2024;Cr‚dito
+156;Mikal Campo;Palmira;Auriculares;25;18/06/2024;Contado
+157;Mikal Campo;Palmira;PS4;400;23/05/2024;Contado
+158;Mikal Campo;Palmira;Auriculares;25;3/09/2024;Contado
+159;Merk Adona;Palmira;PC;600;21/09/2024;Contado
+160;Maca Prabo;Cali;Tablet;350;17/03/2024;Contado
+161;Carl Refur;Tulu ;Auriculares;25;2/04/2024;Contado
+162;Maca Prabo;Palmira;PS4;400;16/11/2024;Contado
+163;Hasan Chezro Mero;Tulu ;PC;600;17/12/2024;Contado
+164;Carl Refur;Tulu ;PC;600;3/06/2024;Contado
+165;Maca Prabo;Cali;Auriculares;25;4/01/2024;Contado
+166;Maca Prabo;Palmira;PS4;400;11/03/2024;Contado
+167;Hasan Chezro Mero;Palmira;Anti-Virus;130;30/06/2024;Contado
+168;Carl Refur;Tulu ;Auriculares;25;6/01/2024;Contado
+169;Merk Adona;Palmira;PC;600;20/05/2024;Contado
+170;Carl Refur;Tulu ;PS4;400;28/11/2024;Contado
+171;Mikal Campo;Palmira;Tablet;350;23/11/2024;Contado
+172;Hasan Chezro Mero;Palmira;PC;600;10/04/2024;Cr‚dito
+173;Carl Refur;Tulu ;PS4;400;22/11/2024;Contado
+174;Carl Refur;Palmira;Tablet;350;21/09/2024;Contado
+175;Merk Adona;Tulu ;PS4;400;16/02/2024;Cr‚dito
+176;Mikal Campo;Palmira;Tablet;350;27/10/2024;Contado
+177;Merk Adona;Tulu ;PC;600;8/01/2024;Contado
+178;Merk Adona;Tulu ;PC;600;7/01/2024;Contado
+179;Carl Refur;Palmira;Tablet;350;17/06/2024;Contado
+180;Maca Prabo;Cali;PC;600;1/08/2024;Cr‚dito
+181;Hasan Chezro Mero;Palmira;M¢vil;250;2/01/2024;Cr‚dito
+182;Hasan Chezro Mero;Palmira;PS4;400;19/06/2024;Cr‚dito
+183;Merk Adona;Tulu ;PS4;400;10/09/2024;Cr‚dito
+184;Mikal Campo;Palmira;PC;600;26/01/2024;Cr‚dito
+185;Carl Refur;Palmira;Tablet;350;31/05/2024;Contado
+186;Mikal Campo;Palmira;M¢vil;250;9/05/2024;Cr‚dito
+187;Carl Refur;Palmira;Tablet;350;15/08/2024;Cr‚dito
+188;Maca Prabo;Palmira;M¢vil;250;18/10/2024;Cr‚dito
+189;Carl Refur;Palmira;PS4;400;9/08/2024;Contado
+190;Hasan Chezro Mero;Tulu ;Auriculares;25;15/02/2024;Cr‚dito
+191;Carl Refur;Palmira;Tablet;350;31/03/2024;Cr‚dito
+192;Merk Adona;Tulu ;M¢vil;250;15/01/2024;Cr‚dito
+193;Hasan Chezro Mero;Buenaventura;Tablet;350;10/01/2024;Cr‚dito
+194;Maca Prabo;Palmira;M¢vil;250;31/03/2024;Cr‚dito
+195;Mikal Campo;Palmira;Anti-Virus;130;3/04/2024;Cr‚dito
+196;Mikal Campo;Palmira;PC;600;14/08/2024;Cr‚dito
+197;Maca Prabo;Cartago;M¢vil;250;12/11/2024;Cr‚dito
+198;Mikal Campo;Palmira;PC;600;16/03/2024;Contado
+199;Mikal Campo;Palmira;Auriculares;25;27/12/2024;Cr‚dito
+200;Carl Refur;Palmira;Auriculares;25;16/02/2024;Contado

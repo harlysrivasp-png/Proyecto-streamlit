@@ -1,0 +1,301 @@
+id_estudiante,edad,sexo,curso,num_accesos,tiempo_plataforma,entregas_tareas,foro_participacion,nota_final,aprobado
+1,24,M,Data Science,69,253,7,11,50,1
+2,21,F,Machine Learning,187,300,2,14,50,1
+3,28,F,Informática,37,352,7,5,421,1
+4,25,M,Data Science,110,352,4,5,50,1
+5,22,F,Informática,50,161,0,4,162,0
+6,24,F,IA,164,427,6,4,50,1
+7,27,F,Data Science,154,98,4,1,461,1
+8,20,F,Data Science,170,126,5,7,50,1
+9,24,M,IA,166,51,5,7,50,1
+10,28,F,Data Science,150,114,7,10,50,1
+11,28,F,Informática,55,310,8,12,335,1
+12,25,M,Machine Learning,44,383,1,0,50,1
+13,22,M,Informática,143,487,8,7,50,1
+14,21,F,Machine Learning,91,109,9,4,497,1
+15,25,F,Machine Learning,124,518,8,1,50,1
+16,25,F,Informática,56,460,9,13,50,1
+17,20,F,Informática,162,275,9,1,50,1
+18,23,F,Informática,19,563,6,13,50,1
+19,22,F,Informática,65,595,0,14,50,1
+20,19,M,IA,39,163,6,14,403,1
+21,25,F,Data Science,118,259,9,5,50,1
+22,29,F,Machine Learning,14,560,4,10,396,1
+23,23,M,Informática,128,447,5,12,50,1
+24,19,M,Informática,42,76,9,8,50,1
+25,29,M,Informática,127,480,6,0,50,1
+26,22,M,IA,74,505,4,11,50,1
+27,18,F,Informática,155,463,6,5,50,1
+28,29,F,Informática,186,490,8,8,50,1
+29,27,F,Informática,20,504,2,7,422,1
+30,23,F,Data Science,94,153,7,10,50,1
+31,29,F,IA,35,180,1,5,122,0
+32,26,F,Informática,72,399,6,2,50,1
+33,18,M,Machine Learning,95,549,1,7,446,1
+34,28,F,Machine Learning,68,224,3,8,50,1
+35,28,M,Machine Learning,36,374,6,0,302,1
+36,27,M,IA,186,426,2,11,50,1
+37,29,F,IA,170,299,1,8,50,1
+38,29,M,Machine Learning,107,443,9,13,50,1
+39,20,F,Informática,114,545,6,14,50,1
+40,29,M,IA,108,393,0,5,50,1
+41,24,F,Machine Learning,138,347,7,5,50,1
+42,21,M,Machine Learning,158,291,2,11,50,1
+43,26,F,Informática,64,368,1,3,194,0
+44,20,F,Data Science,15,245,2,0,99,0
+45,22,F,IA,104,265,4,9,50,1
+46,20,F,Informática,142,343,7,7,50,1
+47,24,F,Machine Learning,111,87,9,1,50,1
+48,22,M,Machine Learning,12,176,6,11,406,1
+49,26,M,Informática,190,349,6,0,50,1
+50,24,M,IA,32,287,6,1,311,1
+51,19,F,Data Science,62,233,7,0,393,1
+52,21,M,Data Science,174,452,0,0,471,1
+53,26,F,Machine Learning,92,432,3,8,412,1
+54,29,F,IA,154,142,5,12,435,1
+55,19,M,Data Science,94,533,8,13,50,1
+56,27,M,IA,87,322,1,0,50,1
+57,26,F,IA,119,458,0,12,432,1
+58,27,M,Machine Learning,10,365,9,3,382,1
+59,22,F,Data Science,60,599,1,9,40,1
+60,19,F,Informática,182,464,6,5,50,1
+61,21,F,Machine Learning,13,439,2,6,362,1
+62,29,F,Data Science,199,478,9,1,50,1
+63,29,F,Data Science,122,129,1,5,487,1
+64,24,M,Data Science,41,162,6,6,496,1
+65,29,M,Data Science,43,443,1,9,193,0
+66,25,F,Data Science,101,322,2,13,465,1
+67,20,F,IA,104,465,6,9,50,1
+68,18,M,Machine Learning,81,107,3,1,398,1
+69,21,M,IA,48,345,0,14,363,1
+70,19,F,Informática,163,258,4,1,50,1
+71,25,M,Data Science,171,301,8,9,50,1
+72,21,F,Machine Learning,191,382,7,6,50,1
+73,19,M,Data Science,127,326,8,11,50,1
+74,23,F,Machine Learning,12,347,9,0,195,0
+75,23,M,IA,132,317,8,7,50,1
+76,27,F,Machine Learning,59,275,6,10,50,1
+77,21,M,Informática,21,475,3,12,50,1
+78,23,M,Informática,63,57,4,2,312,1
+79,19,F,Machine Learning,142,379,0,10,50,1
+80,27,M,Machine Learning,66,361,0,5,402,1
+81,29,F,Machine Learning,154,444,2,8,50,1
+82,19,M,Machine Learning,121,379,7,5,50,1
+83,27,F,Informática,56,505,1,8,461,1
+84,21,M,Data Science,160,577,3,6,50,1
+85,25,F,Machine Learning,94,238,1,14,38,1
+86,24,M,Machine Learning,151,175,4,8,451,1
+87,29,F,Informática,75,283,8,1,50,1
+88,26,M,Informática,84,208,0,11,32,1
+89,25,F,IA,188,388,4,7,50,1
+90,22,F,Machine Learning,112,552,8,7,50,1
+91,19,F,IA,175,127,0,1,50,1
+92,22,M,Informática,47,105,8,11,494,1
+93,25,F,Informática,59,191,7,13,423,1
+94,27,M,Data Science,107,449,3,3,37,1
+95,26,F,Machine Learning,91,376,9,13,50,1
+96,29,M,IA,39,106,4,14,335,1
+97,29,F,Informática,88,555,4,10,50,1
+98,29,M,Informática,100,485,5,14,50,1
+99,26,M,IA,188,63,6,6,50,1
+100,18,F,Data Science,61,408,7,10,50,1
+101,26,M,Informática,175,474,7,3,50,1
+102,24,M,Machine Learning,88,256,1,3,26,0
+103,26,F,Informática,39,88,8,5,472,1
+104,25,M,Machine Learning,115,93,6,9,479,1
+105,18,M,IA,60,107,3,5,226,0
+106,29,M,Machine Learning,90,512,3,9,50,1
+107,25,F,IA,142,551,7,14,50,1
+108,25,M,Machine Learning,38,118,3,2,229,0
+109,28,F,IA,141,180,5,14,50,1
+110,20,M,Machine Learning,147,141,4,8,50,1
+111,18,M,Data Science,193,152,2,11,50,1
+112,25,M,Machine Learning,154,511,9,9,50,1
+113,20,F,Machine Learning,83,233,1,13,482,1
+114,20,M,Data Science,26,221,8,10,293,0
+115,18,M,Informática,93,175,9,1,50,1
+116,28,F,Informática,78,384,8,5,50,1
+117,22,M,Machine Learning,43,259,0,11,298,0
+118,27,F,Data Science,15,459,9,6,50,1
+119,24,F,Machine Learning,62,163,2,11,43,1
+120,27,M,IA,135,483,7,12,50,1
+121,26,F,IA,52,382,5,8,50,1
+122,29,M,Machine Learning,124,113,4,12,448,1
+123,24,F,Informática,120,278,4,2,50,1
+124,26,F,Informática,160,525,5,9,50,1
+125,25,M,Machine Learning,192,558,6,2,50,1
+126,29,F,Machine Learning,89,306,0,6,313,1
+127,19,F,IA,104,314,8,13,50,1
+128,18,F,Informática,127,555,2,3,478,1
+129,24,F,Machine Learning,153,373,3,12,50,1
+130,24,F,IA,17,68,9,7,245,0
+131,25,M,Informática,141,552,0,12,50,1
+132,22,F,Data Science,113,187,9,6,50,1
+133,20,M,IA,141,368,2,4,50,1
+134,29,F,Informática,193,141,1,6,50,1
+135,25,M,Informática,34,69,1,2,0,0
+136,23,M,IA,105,221,0,11,457,1
+137,28,F,Data Science,164,479,7,1,50,1
+138,20,F,IA,102,203,2,5,227,0
+139,18,F,Informática,169,171,2,1,50,1
+140,20,M,Machine Learning,187,167,5,2,50,1
+141,22,F,Machine Learning,70,333,7,5,50,1
+142,20,M,IA,131,587,8,4,50,1
+143,18,M,Informática,60,302,8,7,357,1
+144,22,M,Machine Learning,156,357,3,8,439,1
+145,27,F,Informática,30,523,4,10,50,1
+146,24,F,IA,14,344,1,2,35,1
+147,24,M,Machine Learning,101,151,8,11,50,1
+148,28,M,Informática,179,215,7,9,50,1
+149,26,F,Machine Learning,70,220,2,2,148,0
+150,27,M,IA,31,269,8,2,433,1
+151,27,F,Informática,158,285,2,12,50,1
+152,29,M,Machine Learning,79,490,8,12,50,1
+153,20,F,IA,10,242,1,5,152,0
+154,24,M,Machine Learning,142,308,9,14,50,1
+155,18,F,Machine Learning,21,394,8,14,463,1
+156,21,M,Data Science,99,258,7,0,47,1
+157,21,F,Data Science,55,510,8,6,50,1
+158,22,F,IA,43,373,4,11,50,1
+159,24,M,Data Science,186,212,1,0,50,1
+160,24,M,IA,87,443,7,13,50,1
+161,28,F,Data Science,54,340,5,4,464,1
+162,21,M,Machine Learning,164,344,7,14,50,1
+163,24,F,IA,82,315,4,9,374,1
+164,28,M,IA,35,323,9,12,408,1
+165,20,F,Machine Learning,56,471,1,7,50,1
+166,23,F,IA,130,107,5,3,50,1
+167,29,F,IA,65,234,4,4,341,1
+168,19,F,Data Science,103,92,4,3,50,1
+169,27,F,IA,116,464,0,11,50,1
+170,26,F,Informática,72,200,1,11,306,1
+171,22,M,Machine Learning,57,544,7,13,50,1
+172,23,M,Data Science,70,340,2,3,443,1
+173,29,M,Data Science,90,490,9,11,50,1
+174,29,F,Informática,35,588,2,7,482,1
+175,29,F,Machine Learning,45,512,7,1,50,1
+176,29,F,Machine Learning,10,527,7,0,393,1
+177,21,F,Data Science,17,274,1,2,342,1
+178,28,M,IA,122,353,7,8,50,1
+179,27,M,Data Science,108,190,0,3,288,0
+180,24,F,Machine Learning,189,158,5,9,50,1
+181,29,M,Informática,56,328,7,4,463,1
+182,26,M,Data Science,136,377,2,1,50,1
+183,24,F,Machine Learning,65,237,7,3,426,1
+184,18,M,Data Science,23,363,0,1,36,1
+185,18,F,IA,37,538,8,14,50,1
+186,26,M,Data Science,87,356,8,1,50,1
+187,28,F,Data Science,139,446,4,3,50,1
+188,26,F,Machine Learning,118,493,9,5,50,1
+189,21,F,Machine Learning,163,594,3,6,50,1
+190,26,F,Machine Learning,23,382,5,9,485,1
+191,20,M,Data Science,196,494,6,2,50,1
+192,24,F,IA,65,579,4,2,431,1
+193,23,F,Informática,124,569,9,9,50,1
+194,25,F,Informática,16,128,8,5,282,0
+195,28,M,Machine Learning,12,274,2,12,33,1
+196,26,F,Machine Learning,120,228,6,11,50,1
+197,22,M,Data Science,160,98,9,2,484,1
+198,18,F,Informática,116,398,9,12,50,1
+199,20,M,Machine Learning,27,455,4,1,50,1
+200,27,M,IA,47,516,6,7,429,1
+201,29,F,IA,124,118,1,4,451,1
+202,25,M,Machine Learning,24,532,3,14,50,1
+203,28,F,Machine Learning,128,404,1,0,50,1
+204,23,F,Informática,37,437,6,2,432,1
+205,25,F,Informática,48,551,1,9,443,1
+206,26,M,Data Science,194,394,0,7,50,1
+207,21,M,Informática,26,235,8,3,316,1
+208,18,F,IA,95,504,0,13,50,1
+209,18,F,IA,135,250,7,6,50,1
+210,27,M,Machine Learning,53,69,1,9,31,1
+211,21,F,Informática,34,507,7,11,50,1
+212,29,F,Data Science,154,240,2,13,50,1
+213,24,F,IA,22,476,5,13,393,1
+214,19,M,IA,34,250,2,1,208,0
+215,20,M,Data Science,77,524,6,6,492,1
+216,18,M,Data Science,147,171,9,4,50,1
+217,22,F,IA,76,586,8,4,50,1
+218,18,F,IA,118,479,1,5,50,1
+219,25,F,Data Science,155,113,4,12,50,1
+220,18,M,IA,120,361,5,8,50,1
+221,28,F,Machine Learning,120,592,3,13,50,1
+222,18,F,Machine Learning,43,309,3,5,32,1
+223,19,F,Data Science,120,150,3,11,42,1
+224,19,F,Informática,17,317,1,12,385,1
+225,29,M,Data Science,177,332,3,14,467,1
+226,23,M,Data Science,122,458,0,13,50,1
+227,24,F,Informática,92,434,5,7,50,1
+228,22,M,Informática,51,271,0,6,198,0
+229,18,M,Informática,178,170,9,8,50,1
+230,18,F,Machine Learning,110,405,5,3,50,1
+231,20,F,IA,15,282,0,1,1,0
+232,19,M,Machine Learning,189,123,5,6,50,1
+233,22,F,IA,35,545,9,5,284,0
+234,29,M,Machine Learning,73,430,7,0,50,1
+235,27,F,IA,196,426,1,10,50,1
+236,23,M,Machine Learning,193,502,1,8,50,1
+237,24,F,Informática,68,341,3,8,50,1
+238,21,M,Data Science,118,498,2,11,50,1
+239,24,M,Machine Learning,130,324,3,1,395,1
+240,28,M,IA,42,87,6,2,309,1
+241,25,F,Informática,190,273,0,4,488,1
+242,28,M,Machine Learning,159,324,5,4,50,1
+243,18,M,Machine Learning,30,446,2,14,407,1
+244,23,F,Informática,79,109,9,0,351,1
+245,25,F,Machine Learning,121,127,6,7,459,1
+246,22,M,Data Science,13,195,9,11,343,1
+247,21,M,Machine Learning,103,197,1,7,425,1
+248,19,F,Data Science,84,453,1,3,382,1
+249,23,F,Data Science,199,188,3,12,50,1
+250,23,F,Informática,71,398,0,6,328,1
+251,28,F,Machine Learning,103,322,2,14,394,1
+252,18,F,Informática,104,365,8,14,50,1
+253,26,M,Machine Learning,161,511,6,10,50,1
+254,29,F,Machine Learning,64,272,6,9,50,1
+255,28,M,IA,146,474,3,2,50,1
+256,23,M,Machine Learning,140,282,1,5,47,1
+257,20,M,Informática,40,245,3,13,38,1
+258,21,F,Data Science,49,577,5,9,50,1
+259,29,M,Machine Learning,45,151,2,12,275,0
+260,28,M,IA,161,100,0,9,345,1
+261,21,F,Informática,15,474,7,11,50,1
+262,20,M,Machine Learning,75,88,4,13,372,1
+263,27,M,Informática,84,510,4,8,50,1
+264,20,F,IA,13,290,3,0,307,1
+265,20,M,IA,88,554,5,4,50,1
+266,21,M,Informática,143,447,2,3,50,1
+267,24,M,Machine Learning,127,386,8,7,50,1
+268,21,F,Data Science,122,572,4,10,50,1
+269,26,F,IA,103,268,2,11,50,1
+270,18,F,Machine Learning,188,575,0,0,50,1
+271,25,M,Machine Learning,71,124,9,8,475,1
+272,24,M,Data Science,194,316,5,5,50,1
+273,19,F,IA,88,198,1,3,226,0
+274,25,M,IA,145,347,2,11,50,1
+275,18,M,Machine Learning,35,139,0,8,23,0
+276,28,F,Machine Learning,188,513,8,10,50,1
+277,29,F,Data Science,182,516,7,4,50,1
+278,26,M,Data Science,53,575,1,14,50,1
+279,26,M,IA,142,135,7,4,50,1
+280,19,M,Informática,79,393,8,11,50,1
+281,24,F,IA,163,311,0,4,291,0
+282,27,F,Machine Learning,127,239,4,0,409,1
+283,20,F,IA,77,243,7,0,328,1
+284,24,F,Informática,28,277,1,7,57,0
+285,29,M,Data Science,29,438,3,11,475,1
+286,27,F,Informática,122,379,6,7,50,1
+287,26,F,Informática,149,303,2,11,50,1
+288,21,F,Informática,56,92,4,14,266,0
+289,29,F,Data Science,10,93,7,14,187,0
+290,18,F,Informática,99,51,9,5,413,1
+291,19,M,Informática,151,582,2,11,50,1
+292,18,M,Informática,73,53,3,10,425,1
+293,29,F,Machine Learning,47,107,8,12,50,1
+294,22,M,Informática,46,223,6,3,475,1
+295,22,F,Data Science,135,494,0,1,50,1
+296,28,F,Informática,148,579,3,13,50,1
+297,24,M,Informática,109,485,3,1,466,1
+298,26,M,Data Science,86,430,8,8,50,1
+299,26,F,Informática,12,337,5,14,313,1
+300,20,F,Data Science,170,98,8,4,50,1
