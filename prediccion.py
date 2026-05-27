@@ -7,12 +7,19 @@ from escenario4 import escenario_4
 def prediccion():
     st.markdown("#:chart_with_upwards_trend: Predicción de Abandono de Clientes")
     st.markdown("""
-    En esta sección, contarás con 4 escenarios para realizar predicciones distintas y conocer  si los clientes abandonan el negocio.
+    En esta sección, contarás con 4 escenarios para realizar predicciones distintas y conocer  si los clientes abandonarán los servicios o no.Nuestro 
+    modelo utiliza información demográfica y de uso del servicio para predecir la probabilidad de abandono.
+    
     ** Instrucciones:**
-    -** Escenario_1:** Realiza predicciones manuales de los clientes que abandonarán a partir de un modelo Predice la probabilidad de abandono de los clientes utilizando un modelo de regresión logística.
-    -** Escenario_2:** Utiliza un modelo de árbol de decisión para identificar los factores
-    -** Escenario_3:** Aplica un modelo de bosque aleatorio para mejorar la precisión de las predicciones.
-    -** Escenario_4:** Implementa un modelo de redes neuronales para capturar relaciones complejas entre las variables y predecir el abandono de los clientes.
+
+    - Escenario_1:Realiza predicciones manuales de los clientes que abandonarán a partir de un modelo 
+        pre-entrenado que se encuentra cargado previamente.
+    - Escenario_2:Carga  un conjunto de datos nuevos en la cual contenga todas las características que se
+        utilizaron en el "dataset_abandono" exceptuando la columna apredecir (abandono).
+    - Escenario_3: Realiza carga del modelo pre-entrenado(creado enpla página de entrenamiento) en formato 'pkl'
+        para realizar predicciones manuales  de clientes que abndonarán.
+    - Escenario_4: Realiza la carga de un dataset nuevo(sin la variable 'abandono') y de un modelo para
+        realizar la predicción  de abanndono de los clientes.
     """)
     st.divider()
     opciones = st.radio(

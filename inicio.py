@@ -46,9 +46,19 @@ def cargar_archivo():
 
     ### Para comenzar:
 
-    1. Sube tu archivo CSV
-    2. Analiza el dataset
-    3. Ejecuta las predicciones
+    1. Sube tu conjunto de datos de clientes utilizando la opción "subir" que encuentra en la parte de abajo
+        Asegúrate de que tu archivo esté en formato CSV.
+    2. Puedes dirigirte a la página de Análisis Exploratorio de Datos para analizar los datos que se cargaron.
+    3. En la Pagina de Preprocesamiento puedes eliminar columnas o valores vacíos y atípico
+    4. Una vez realizado todo ese procedimiento puedes dirigirte a Entrenamiento para Entrenar tu modelo con los 
+       parámetros de cada modelo.
+    5. Sube el modelo entrenado que utilizarás para realizar las predicciones. Asegúrate de que el modelo está en formato PKL.
+    6. Navega por las opciones en a barra lateral para ajustar los parámetros y personalizar tu análisis.
+    7. Revisa las predicciones y las probabilidades generadas por el modelo.
+    8. Descarga el informe con las predicciones  y las probabilidades para cada cliente.
+                
+    ¡Buena suerte en tus esfuerzos para mejorar la retención de clientes y mantener a tus clientes satisfechos!            
+    
 
     """)
 
