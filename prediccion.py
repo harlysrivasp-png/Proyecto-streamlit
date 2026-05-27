@@ -12,9 +12,9 @@ def prediccion():
     
     ** Instrucciones:**
 
-    - Escenario_1:Realiza predicciones manuales de los clientes que abandonarán a partir de un modelo 
+    - Escenario_1: Realiza predicciones manuales de los clientes que abandonarán a partir de un modelo 
         pre-entrenado que se encuentra cargado previamente.
-    - Escenario_2:Carga  un conjunto de datos nuevos en la cual contenga todas las características que se
+    - Escenario_2: Carga  un conjunto de datos nuevos en la cual contenga todas las características que se
         utilizaron en el "dataset_abandono" exceptuando la columna apredecir (abandono).
     - Escenario_3: Realiza carga del modelo pre-entrenado(creado enpla página de entrenamiento) en formato 'pkl'
         para realizar predicciones manuales  de clientes que abndonarán.
