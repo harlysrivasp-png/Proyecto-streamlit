@@ -5,3 +5,12 @@ matplotlib
 plotly
 openpyxl
 seaborn
+streamlit-authenticator
+numpy
+scikit-learn
+xgboost
+shap
+matplotlib
+seaborn
+plotly
+openpyxl
