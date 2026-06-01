@@ -69,4 +69,3 @@ def cargar_archivo():
             st.dataframe(df.head())
 
 
-cargar_archivo()

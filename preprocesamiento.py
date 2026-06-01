@@ -469,4 +469,3 @@ def preprocesamiento():
 # EJECUTAR
 # =========================================================
 
-preprocesamiento()

@@ -2,14 +2,14 @@ import streamlit as st
 import pandas as pd
 import pickle
 import numpy as np
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import LabelEncoder
 from io import BytesIO
 import plotly.graph_objects as go
 import plotly.express as px
 
 
 # ==========================================================
-# FUNCIÓN PARA EXPORTAR RESULTADOS A EXCEL
+# FUNCIÓN PARA EXPORTAR A EXCEL
 # ==========================================================
 
 def to_excel(df):
@@ -23,13 +23,17 @@ def to_excel(df):
 
 
 # ==========================================================
-# FUNCIÓN PARA OBTENER COLUMNAS DEL MODELO
+# FUNCIÓN PARA LEER CSV
 # ==========================================================
 
-def obtener_columnas_modelo(modelo):
-    if hasattr(modelo, "feature_names_in_"):
-        return list(modelo.feature_names_in_)
-    return None
+def leer_csv(archivo):
+    try:
+        df = pd.read_csv(archivo)
+    except Exception:
+        archivo.seek(0)
+        df = pd.read_csv(archivo, sep=";")
+
+    return df
 
 
 # ==========================================================
@@ -38,16 +42,16 @@ def obtener_columnas_modelo(modelo):
 
 def escenario4():
 
-    st.markdown("## Escenario 4: Predicción Masiva con Modelo Cargado")
+    st.markdown("## Escenario 4: Cargar Modelo y CSV para Predicción Masiva")
 
     st.markdown("""
-    En este escenario, el usuario puede cargar un modelo entrenado en formato `.pkl`
-    y un archivo CSV con registros de estudiantes. El sistema procesa los datos,
-    realiza la predicción de abandono académico y genera un reporte descargable.
+    En este escenario se carga un modelo entrenado en formato `.pkl` y un archivo CSV
+    con registros de estudiantes. El sistema genera la predicción de abandono académico
+    para cada estudiante y permite descargar el reporte final.
     """)
 
     # ======================================================
-    # CARGA DE ARCHIVOS
+    # CARGAR ARCHIVOS
     # ======================================================
 
     datos_nuevos = st.sidebar.file_uploader(
@@ -61,8 +65,10 @@ def escenario4():
     )
 
     if modelo_entrenado is None or datos_nuevos is None:
-        st.info("Por favor, suba el modelo entrenado (.pkl) y el archivo CSV para continuar.")
-        return
+        st.info(
+            "Por favor, suba el modelo entrenado (.pkl) y el archivo CSV para continuar."
+        )
+        st.stop()
 
     # ======================================================
     # CARGAR MODELO
@@ -71,24 +77,61 @@ def escenario4():
     try:
         carga_modelo = pickle.load(modelo_entrenado)
         st.success("Modelo cargado correctamente.")
-
     except Exception as e:
         st.error(f"Error al cargar el modelo: {e}")
-        return
+        st.stop()
 
     # ======================================================
-    # CARGAR CSV
+    # LEER DATASET
     # ======================================================
 
     try:
-        dataset_ingresado = pd.read_csv(datos_nuevos)
-
+        dataset_ingresado = leer_csv(datos_nuevos)
     except Exception as e:
         st.error(f"Error al leer el archivo CSV: {e}")
-        return
+        st.stop()
 
-    if st.checkbox("Mostrar datos ingresados"):
-        st.write(dataset_ingresado)
+    # ======================================================
+    # NORMALIZAR NOMBRES DE COLUMNAS
+    # ======================================================
+
+    dataset_ingresado.columns = (
+        dataset_ingresado.columns
+        .astype(str)
+        .str.strip()
+        .str.lower()
+        .str.replace(" ", "_")
+    )
+
+    dataset_ingresado = dataset_ingresado.rename(
+        columns={
+            "task_submisssions": "task_submissions",
+            "late_submisssions": "late_submissions",
+            "task_submissions": "task_submissions",
+            "late_submissions": "late_submissions",
+            "socioeconomic_level": "socioeconomic_level"
+        }
+    )
+
+    # ======================================================
+    # VERIFICAR ARCHIVO CARGADO
+    # ======================================================
+
+    st.markdown("### Verificación del archivo cargado")
+
+    st.write("Archivo cargado actualmente:")
+    st.write(datos_nuevos.name)
+
+    st.write("Dimensiones del archivo cargado:")
+    st.write(dataset_ingresado.shape)
+
+    st.write("Vista previa del archivo cargado:")
+    st.dataframe(dataset_ingresado.head())
+
+    if st.checkbox("Mostrar archivo completo cargado"):
+        st.dataframe(dataset_ingresado)
+
+    st.divider()
 
     # ======================================================
     # COLUMNAS REQUERIDAS
@@ -110,14 +153,11 @@ def escenario4():
         "final_grade"
     ]
 
-    # Si el modelo trae nombres de columnas, se pueden usar
-    columnas_modelo = obtener_columnas_modelo(carga_modelo)
-
-    if columnas_modelo is not None:
-        columnas_requeridas = columnas_modelo
+    if hasattr(carga_modelo, "feature_names_in_"):
+        columnas_requeridas = list(carga_modelo.feature_names_in_)
 
     # ======================================================
-    # VALIDAR COLUMNAS
+    # VALIDAR COLUMNAS DEL CSV
     # ======================================================
 
     columnas_faltantes = [
@@ -126,103 +166,134 @@ def escenario4():
     ]
 
     if len(columnas_faltantes) > 0:
-        st.error("El archivo CSV no contiene todas las columnas requeridas por el modelo.")
+        st.error(
+            "El archivo CSV no contiene todas las columnas requeridas por el modelo."
+        )
+
         st.write("Columnas faltantes:")
         st.write(columnas_faltantes)
 
-        st.write("Columnas requeridas:")
+        st.write("Columnas requeridas por el modelo:")
         st.write(columnas_requeridas)
-        return
+
+        st.write("Columnas encontradas en el archivo:")
+        st.write(dataset_ingresado.columns.tolist())
+
+        st.stop()
 
     # ======================================================
-    # PREPARAR DATASET PARA PREDICCIÓN
+    # CREAR DATASET PARA PREDICCIÓN
     # ======================================================
 
     dataset_nuevo = dataset_ingresado[columnas_requeridas].copy()
 
+    st.markdown("### Datos seleccionados para la predicción")
+
+    st.write("Dimensiones antes del preprocesamiento:")
+    st.write(dataset_nuevo.shape)
+
+    if st.checkbox("Mostrar datos seleccionados para predicción"):
+        st.dataframe(dataset_nuevo)
+
     st.divider()
-    st.markdown("### Datos que ingresan a la predicción")
-
-    if st.checkbox("Mostrar datos para predicción"):
-        st.write(dataset_nuevo)
 
     # ======================================================
-    # PREPROCESAMIENTO
+    # PREPROCESAMIENTO DE VARIABLES CATEGÓRICAS
     # ======================================================
 
-    dataset_procesado = dataset_nuevo.copy()
-
-    # Codificación de variables categóricas
-    columnas_categoricas = dataset_procesado.select_dtypes(
+    columnas_categoricas = dataset_nuevo.select_dtypes(
         include=["object"]
     ).columns
 
     for columna in columnas_categoricas:
         encoder = LabelEncoder()
-        dataset_procesado[columna] = encoder.fit_transform(
-            dataset_procesado[columna].astype(str)
+        dataset_nuevo[columna] = encoder.fit_transform(
+            dataset_nuevo[columna].astype(str)
         )
-
-    # Escalado de variables numéricas reales del dataset
-    columnas_numericas = [
-        "age",
-        "socioeconomic_level",
-        "semester",
-        "login_frequency",
-        "forum_participation",
-        "task_submissions",
-        "late_submissions",
-        "connection_time",
-        "resource_views",
-        "final_grade"
-    ]
-
-    columnas_numericas = [
-        col for col in columnas_numericas
-        if col in dataset_procesado.columns
-    ]
-
-    scaler = StandardScaler()
-
-    if len(columnas_numericas) > 0:
-        dataset_procesado[columnas_numericas] = scaler.fit_transform(
-            dataset_procesado[columnas_numericas]
-        )
-
-    st.markdown("### Datos procesados para el modelo")
-
-    if st.checkbox("Mostrar datos procesados"):
-        st.write(dataset_procesado)
 
     # ======================================================
-    # PREDICCIÓN
+    # ORDENAR COLUMNAS SEGÚN EL MODELO ENTRENADO
+    # ======================================================
+
+    if hasattr(carga_modelo, "feature_names_in_"):
+
+        columnas_modelo_entrenado = list(carga_modelo.feature_names_in_)
+
+        columnas_faltantes_modelo = [
+            col for col in columnas_modelo_entrenado
+            if col not in dataset_nuevo.columns
+        ]
+
+        columnas_sobrantes = [
+            col for col in dataset_nuevo.columns
+            if col not in columnas_modelo_entrenado
+        ]
+
+        if len(columnas_faltantes_modelo) > 0:
+            st.error(
+                "Faltan columnas requeridas por el modelo después del preprocesamiento:"
+            )
+            st.write(columnas_faltantes_modelo)
+            st.stop()
+
+        if len(columnas_sobrantes) > 0:
+            dataset_nuevo = dataset_nuevo.drop(columns=columnas_sobrantes)
+
+        dataset_nuevo = dataset_nuevo[columnas_modelo_entrenado]
+
+    # ======================================================
+    # VERIFICACIÓN DE DATOS QUE ENTRAN AL MODELO
+    # ======================================================
+
+    st.markdown("### Verificación de datos que entran al modelo")
+
+    st.write("Dimensiones de los datos que entran al modelo:")
+    st.write(dataset_nuevo.shape)
+
+    st.write("Columnas usadas por el modelo:")
+    st.write(dataset_nuevo.columns.tolist())
+
+    st.write("Vista previa de los datos que entran al modelo:")
+    st.dataframe(dataset_nuevo.head())
+
+    st.divider()
+
+    # ======================================================
+    # REALIZAR PREDICCIÓN
     # ======================================================
 
     try:
-        prediccion_modelo = carga_modelo.predict(dataset_procesado)
-        prediction_proba_modelo = carga_modelo.predict_proba(dataset_procesado)
+        prediccion_modelo = carga_modelo.predict(dataset_nuevo)
+        prediction_proba_modelo = carga_modelo.predict_proba(dataset_nuevo)
 
     except Exception as e:
         st.error(f"Error al realizar la predicción: {e}")
         st.warning(
-            "Verifique que el modelo haya sido entrenado con las mismas variables "
+            "Verifique que el modelo haya sido entrenado con las mismas columnas "
             "y en el mismo orden que el archivo cargado."
         )
-        return
+        st.stop()
 
     # ======================================================
-    # RESULTADOS
+    # RESULTADOS DE PREDICCIÓN
     # ======================================================
 
-    df_prediccion = pd.DataFrame(prediccion_modelo, columns=["Abandono"])
+    df_prediccion = pd.DataFrame(
+        prediccion_modelo,
+        columns=["Abandono"]
+    )
 
     df_prediccion["Abandono"] = df_prediccion["Abandono"].map({
         0: "No",
         1: "Si"
     })
 
-    probabilidad_permanencia = prediction_proba_modelo[:, 0] * 100
-    probabilidad_abandono = prediction_proba_modelo[:, 1] * 100
+    if prediction_proba_modelo.shape[1] >= 2:
+        probabilidad_permanencia = prediction_proba_modelo[:, 0] * 100
+        probabilidad_abandono = prediction_proba_modelo[:, 1] * 100
+    else:
+        probabilidad_permanencia = np.zeros(len(prediccion_modelo))
+        probabilidad_abandono = np.zeros(len(prediccion_modelo))
 
     df_resultados = pd.DataFrame({
         "Abandono": df_prediccion["Abandono"],
@@ -238,19 +309,27 @@ def escenario4():
         axis=1
     )
 
-    csv_data = df_unido.to_csv(index=False).encode("utf-8")
+    # ======================================================
+    # MOSTRAR RESULTADOS
+    # ======================================================
 
     st.divider()
     st.markdown("### Datos con predicción final")
 
-    if st.checkbox("Mostrar datos con predicción final"):
-        st.write(df_unido)
+    st.write("Dimensiones del archivo final con predicciones:")
+    st.write(df_unido.shape)
 
-    # ======================================================
-    # GRÁFICOS
-    # ======================================================
+    st.dataframe(df_unido)
+
+    st.write("Distribución de predicciones:")
+    st.write(df_unido["Abandono"].value_counts())
 
     st.divider()
+
+    # ======================================================
+    # GRÁFICOS DE PREDICCIÓN
+    # ======================================================
+
     st.markdown("### Gráficos de la predicción")
 
     col_gra1, col_gra2 = st.columns((5, 5))
@@ -282,11 +361,9 @@ def escenario4():
 
         fig_bar.update_layout(
             title="Distribución de Predicción de Abandono",
-            xaxis_title="Predicción de abandono",
+            xaxis_title="Predicción",
             yaxis_title="Cantidad de estudiantes",
-            font=dict(size=12),
-            width=500,
-            height=500
+            font=dict(size=12)
         )
 
         st.plotly_chart(fig_bar, use_container_width=True)
@@ -300,27 +377,27 @@ def escenario4():
                 values=valores_abandono.values,
                 textinfo="label+percent",
                 insidetextorientation="radial",
-                hovertemplate="Predicción: %{label}<br>Cantidad: %{value}<br>Porcentaje: %{percent}<extra></extra>",
-                showlegend=True,
-                marker=dict(colors=colores)
+                marker=dict(colors=colores),
+                hovertemplate="Predicción: %{label}<br>Cantidad: %{value}<br>Porcentaje: %{percent}<extra></extra>"
             )
         )
 
         fig_pie.update_layout(
             title="Porcentaje de Predicción de Abandono",
-            font=dict(size=15),
-            width=500,
-            height=500
+            font=dict(size=15)
         )
 
         st.plotly_chart(fig_pie, use_container_width=True)
+
+    st.divider()
 
     # ======================================================
     # DESCARGAS
     # ======================================================
 
-    st.divider()
     st.markdown("### Descargar archivo con predicciones")
+
+    csv_data = df_unido.to_csv(index=False).encode("utf-8")
 
     st.download_button(
         label="📁 Descargar archivo Excel",
@@ -335,10 +412,3 @@ def escenario4():
         file_name="Reporte_Prediccion_Abandono.csv",
         mime="text/csv"
     )
-
-
-# ==========================================================
-# EJECUTAR ESCENARIO
-# ==========================================================
-
-escenario4()

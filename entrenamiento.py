@@ -43,8 +43,7 @@ def entrenamiento():
 
     st.markdown("""
     En este módulo se entrenan modelos de clasificación para predecir el abandono estudiantil.
-    Se utilizan las variables académicas, sociodemográficas y de interacción con el LMS para
-    estimar si un estudiante presenta riesgo de abandono.
+    Se utilizan variables académicas, sociodemográficas y de interacción con el LMS.
     """)
 
     # =====================================================
@@ -65,6 +64,7 @@ def entrenamiento():
 
     data.columns = (
         data.columns
+        .astype(str)
         .str.strip()
         .str.lower()
         .str.replace(" ", "_")
@@ -74,9 +74,17 @@ def entrenamiento():
         columns={
             "socioeconomic_level": "socioeconomic_level",
             "socioeconomic_level": "socioeconomic_level",
-            "socioecoNomic_level": "socioeconomic_level",
-            "task_submisSions": "task_submissions",
-            "late_submisSions": "late_submissions"
+            "socioeconomic_level": "socioeconomic_level",
+            "socioeconomic_level": "socioeconomic_level",
+            "socioeconomic_level": "socioeconomic_level",
+            "socioeconomic_level": "socioeconomic_level",
+            "socioeconomic_level": "socioeconomic_level",
+            "socioeconomic_level": "socioeconomic_level",
+            "task_submissions": "task_submissions",
+            "late_submissions": "late_submissions",
+            "task_submisssions": "task_submissions",
+            "late_submisssions": "late_submissions",
+            "socioeconomic_level": "socioeconomic_level"
         }
     )
 
@@ -91,49 +99,125 @@ def entrenamiento():
         return
 
     # =====================================================
-    # CODIFICAR DROPOUT SI VIENE COMO TEXTO
+    # CODIFICAR DROPOUT DE FORMA SEGURA
     # =====================================================
 
-    if data["dropout"].dtype == "object":
+    data["dropout"] = (
+        data["dropout"]
+        .astype(str)
+        .str.strip()
+        .str.upper()
+        .replace({
+            "NO": 0,
+            "N": 0,
+            "0": 0,
+            "FALSE": 0,
+            "FALSO": 0,
+            "NO ABANDONO": 0,
+            "NO_ABANDONO": 0,
+            "SI": 1,
+            "SÍ": 1,
+            "S": 1,
+            "1": 1,
+            "TRUE": 1,
+            "VERDADERO": 1,
+            "SI ABANDONO": 1,
+            "SÍ ABANDONO": 1,
+            "SI_ABANDONO": 1
+        })
+    )
 
-        data["dropout"] = (
-            data["dropout"]
-            .astype(str)
-            .str.strip()
-            .replace({
-                "No": 0,
-                "NO": 0,
-                "no": 0,
-                "Si": 1,
-                "SI": 1,
-                "Sí": 1,
-                "sí": 1,
-                "si": 1
-            })
+    data["dropout"] = pd.to_numeric(
+        data["dropout"],
+        errors="coerce"
+    )
+
+    data = data.dropna(subset=["dropout"])
+
+    data["dropout"] = data["dropout"].astype(int)
+
+    # =====================================================
+    # MOSTRAR DISTRIBUCIÓN DE DROPOUT
+    # =====================================================
+
+    st.subheader("Distribución de la variable objetivo")
+
+    distribucion_dropout = data["dropout"].value_counts().sort_index()
+
+    st.write(distribucion_dropout)
+
+    st.info("""
+    Interpretación:
+    - 0 = No abandono
+    - 1 = Sí abandono
+    """)
+
+    if data["dropout"].nunique() < 2:
+        st.error(
+            "No se puede entrenar el modelo porque la variable 'dropout' tiene una sola clase. "
+            "Verifique que el dataset tenga registros tanto de No abandono como de Sí abandono."
         )
-
-    data = data[data["dropout"].isin([0, 1])]
-
-    # =====================================================
-    # ELIMINAR ID SI EXISTE
-    # =====================================================
-
-    if "id" in data.columns:
-        data = data.drop(columns=["id"])
-
-    if "student_id" in data.columns:
-        data = data.drop(columns=["student_id"])
+        return
 
     # =====================================================
-    # VALIDAR QUE TODO SEA NUMÉRICO
+    # ELIMINAR IDENTIFICADORES
+    # =====================================================
+
+    columnas_id = [
+        "id",
+        "student_id",
+        "codigo",
+        "code"
+    ]
+
+    for col in columnas_id:
+        if col in data.columns:
+            data = data.drop(columns=[col])
+
+    # =====================================================
+    # VALIDAR COLUMNAS CATEGÓRICAS SIN CODIFICAR
     # =====================================================
 
     columnas_object = data.select_dtypes(include="object").columns.tolist()
 
     if len(columnas_object) > 0:
         st.error("Existen columnas categóricas sin codificar.")
-        st.write("Debe codificar estas columnas antes de entrenar:")
+        st.write("Debe codificar estas columnas en Preprocesamiento antes de entrenar:")
         st.write(columnas_object)
+        st.warning(
+            "Vaya a Preprocesamiento de Datos y aplique LabelEncoder a las variables categóricas "
+            "como program, gender y employed."
+        )
+        return
+
+    # =====================================================
+    # ELIMINAR FILAS CON VALORES NULOS
+    # =====================================================
+
+    if data.isnull().sum().sum() > 0:
+        st.warning("El dataset contiene valores nulos. Se eliminarán las filas incompletas antes de entrenar.")
+        data = data.dropna()
+
+    # =====================================================
+    # VALIDAR NUEVAMENTE DROPOUT DESPUÉS DE LIMPIEZA
+    # =====================================================
+
+    if data["dropout"].nunique() < 2:
+        st.error(
+            "Después de la limpieza, la variable 'dropout' quedó con una sola clase. "
+            "No es posible entrenar el modelo."
+        )
+        return
+
+    # =====================================================
+    # SEPARAR X E y
+    # =====================================================
+
+    X = data.drop("dropout", axis=1)
+    y = data["dropout"]
+
+    if X.shape[1] == 0:
+        st.error("No hay variables predictoras disponibles para entrenar el modelo.")
         return
 
     # =====================================================
@@ -329,14 +413,17 @@ def entrenamiento():
         }
 
     # =====================================================
-    # MOSTRAR PARÁMETROS
+    # MOSTRAR PARÁMETROS Y DATASET
     # =====================================================
 
     st.subheader("Configuración del entrenamiento")
     st.write(parametros)
 
-    st.subheader("Vista previa del dataset de entrenamiento")
+    st.subheader("Vista previa del dataset utilizado")
     st.dataframe(data.head())
+
+    st.write("Columnas usadas para entrenamiento:")
+    st.write(X.columns.tolist())
 
     # =====================================================
     # BOTÓN ENTRENAR
@@ -345,18 +432,20 @@ def entrenamiento():
     if st.button("Entrenar Modelo"):
 
         model = entrenar_modelo(
-            data=data,
+            X=X,
+            y=y,
             test_perc=test_perc,
             randomstate=randomstate,
             modelo=modelo_entrenar
         )
 
-        model_data = convert_model_to_bytes(model)
+        if model is not None:
+            model_data = convert_model_to_bytes(model)
 
-        st.session_state.model_data = model_data
-        st.session_state.modelo_entrenado = model
+            st.session_state.model_data = model_data
+            st.session_state.modelo_entrenado = model
 
-        st.success("Modelo entrenado correctamente.")
+            st.success("Modelo entrenado correctamente.")
 
     # =====================================================
     # DESCARGAR MODELO
@@ -376,22 +465,41 @@ def entrenamiento():
 # ENTRENAR MODELO
 # =========================================================
 
-def entrenar_modelo(data, test_perc, randomstate, modelo):
+def entrenar_modelo(X, y, test_perc, randomstate, modelo):
 
-    X = data.drop("dropout", axis=1)
-    y = data["dropout"]
+    try:
+        X_train, X_test, y_train, y_test = train_test_split(
+            X,
+            y,
+            test_size=test_perc / 100,
+            random_state=randomstate,
+            stratify=y
+        )
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X,
-        y,
-        test_size=test_perc / 100,
-        random_state=randomstate,
-        stratify=y
-    )
+    except ValueError as e:
+        st.error(f"Error al dividir los datos: {e}")
+        return None
 
-    model = modelo
+    if y_train.nunique() < 2:
+        st.error(
+            "El conjunto de entrenamiento quedó con una sola clase. "
+            "Cambie el porcentaje de entrenamiento o revise la distribución de dropout."
+        )
+        return None
 
-    model.fit(X_train, y_train)
+    if y_test.nunique() < 2:
+        st.warning(
+            "El conjunto de prueba quedó con una sola clase. "
+            "Algunas métricas como ROC-AUC pueden no calcularse correctamente."
+        )
+
+    try:
+        model = modelo
+        model.fit(X_train, y_train)
+
+    except ValueError as e:
+        st.error(f"Error al entrenar el modelo: {e}")
+        return None
 
     # =====================================================
     # PREDICCIONES
@@ -400,7 +508,10 @@ def entrenar_modelo(data, test_perc, randomstate, modelo):
     y_pred_test = model.predict(X_test)
     y_pred_train = model.predict(X_train)
 
-    y_prob_test = model.predict_proba(X_test)[:, 1]
+    if hasattr(model, "predict_proba"):
+        y_prob_test = model.predict_proba(X_test)[:, 1]
+    else:
+        y_prob_test = None
 
     # =====================================================
     # MÉTRICAS
@@ -412,17 +523,25 @@ def entrenar_modelo(data, test_perc, randomstate, modelo):
     precision = precision_score(y_test, y_pred_test, zero_division=0)
     recall = recall_score(y_test, y_pred_test, zero_division=0)
     f1 = f1_score(y_test, y_pred_test, zero_division=0)
-    roc_auc = roc_auc_score(y_test, y_prob_test)
 
-    cv_scores = cross_val_score(
-        model,
-        X,
-        y,
-        cv=5,
-        scoring="accuracy"
-    )
+    if y_prob_test is not None and y_test.nunique() == 2:
+        roc_auc = roc_auc_score(y_test, y_prob_test)
+    else:
+        roc_auc = 0
 
-    cv_mean = cv_scores.mean()
+    try:
+        cv_scores = cross_val_score(
+            model,
+            X,
+            y,
+            cv=5,
+            scoring="accuracy"
+        )
+
+        cv_mean = cv_scores.mean()
+
+    except Exception:
+        cv_mean = 0
 
     st.divider()
     st.subheader("Métricas del modelo")
@@ -496,7 +615,8 @@ def entrenar_modelo(data, test_perc, randomstate, modelo):
 
         cm = confusion_matrix(
             y_test,
-            y_pred_test
+            y_pred_test,
+            labels=[0, 1]
         )
 
         fig = ff.create_annotated_heatmap(
@@ -521,45 +641,53 @@ def entrenar_modelo(data, test_perc, randomstate, modelo):
 
         st.subheader("Curva ROC")
 
-        fpr, tpr, _ = roc_curve(
-            y_test,
-            y_prob_test
-        )
+        if y_prob_test is not None and y_test.nunique() == 2:
 
-        fig_roc = go.Figure()
-
-        fig_roc.add_trace(
-            go.Scatter(
-                x=fpr,
-                y=tpr,
-                mode="lines",
-                name=f"AUC = {roc_auc:.4f}"
+            fpr, tpr, _ = roc_curve(
+                y_test,
+                y_prob_test
             )
-        )
 
-        fig_roc.add_trace(
-            go.Scatter(
-                x=[0, 1],
-                y=[0, 1],
-                mode="lines",
-                line=dict(dash="dash"),
-                name="Clasificador aleatorio"
+            fig_roc = go.Figure()
+
+            fig_roc.add_trace(
+                go.Scatter(
+                    x=fpr,
+                    y=tpr,
+                    mode="lines",
+                    name=f"AUC = {roc_auc:.4f}"
+                )
             )
-        )
 
-        fig_roc.update_layout(
-            title="Curva ROC",
-            xaxis_title="False Positive Rate",
-            yaxis_title="True Positive Rate"
-        )
+            fig_roc.add_trace(
+                go.Scatter(
+                    x=[0, 1],
+                    y=[0, 1],
+                    mode="lines",
+                    line=dict(dash="dash"),
+                    name="Clasificador aleatorio"
+                )
+            )
 
-        st.plotly_chart(fig_roc, use_container_width=True)
+            fig_roc.update_layout(
+                title="Curva ROC",
+                xaxis_title="False Positive Rate",
+                yaxis_title="True Positive Rate"
+            )
+
+            st.plotly_chart(fig_roc, use_container_width=True)
+
+        else:
+
+            st.info(
+                "No fue posible graficar la curva ROC porque el conjunto de prueba "
+                "no contiene ambas clases."
+            )
 
     return model
 
 
 # =========================================================
-# EJECUTAR
+# NO EJECUTAR AUTOMÁTICAMENTE
 # =========================================================
-
-entrenamiento()
+# entrenamiento()

@@ -1,39 +1,71 @@
 import streamlit as st
 import streamlit_authenticator as stauth
-import yaml
-from yaml.loader import SafeLoader
 from app import app
 
-st.set_page_config(page_title= 'App de Predicción',
-                   page_icon='images/customer-rating.png',
-                   layout='wide',
-                   initial_sidebar_state='expanded')
 
-def login():
-    with open('config.yaml') as file:
-        config= yaml.load(file,Loader=SafeLoader)
-    authenticator=stauth.Authenticate(
-        config['credentials'],
-        config['cookie']['name'],
-        config['cookie']['key'],
-        config['cookie']['expiry_days']
+st.set_page_config(
+    page_title="Predicción de Abandono Estudiantil",
+    page_icon="🎓",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+
+# ==========================================================
+# USUARIOS
+# Usuario: hrivas
+# Contraseña: abc
+# IMPORTANTE: reemplace el password por el hash generado
+# ==========================================================
+
+usuarios = {
+    "usernames": {
+        "hrivas": {
+            "name": "Harlys Rivas",
+            "password": "$2b$12$xTIOYm3OuX/x3RkHTz9eYOFAZwlMV2GxxfmLrMNsnDozbfpxbYSSq"
+        }
+    }
+}
+
+
+authenticator = stauth.Authenticate(
+    usuarios,
+    "app_abandono_estudiantil",
+    "cookie_signature_key",
+    cookie_expiry_days=1
+)
+
+
+# ==========================================================
+# LOGIN
+# ==========================================================
+
+authenticator.login(
+    location="main"
+)
+
+
+# ==========================================================
+# CONTROL DE ACCESO
+# ==========================================================
+
+if st.session_state.get("authentication_status"):
+
+    authenticator.logout(
+        button_name="Cerrar sesión",
+        location="sidebar"
     )
-    col1, col2,col3=st.columns(3)
-    with col2:
-        authenticator.login()
-    if st.session_state["authentication_status"]:
-          authenticator.logout()
-          st.write(f"Bienvenido a la aplicación:**{st.session_state["name"]}**")
-          app()
-    elif st.session_state["authentication_status"] is False:
-        st.error('Usuario o Contraseña no válidos')
-    elif st.session_state["authentication_status"] is None:
-        col4,col5,col6=st.columns(3)
-        with col5:
-            st.warning("Por favor, ingrese sus credenciales")
-login()
 
+    st.sidebar.success(
+        f"Bienvenido, {st.session_state.get('name')}"
+    )
 
+    app()
 
+elif st.session_state.get("authentication_status") is False:
 
+    st.error("Usuario o contraseña incorrectos.")
 
+else:
+
+    st.warning("Ingrese usuario y contraseña para continuar.")

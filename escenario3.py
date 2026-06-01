@@ -2,28 +2,22 @@ import streamlit as st
 import pandas as pd
 import pickle
 import numpy as np
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import LabelEncoder
 
-
-# ==========================================================
-# ESCENARIO 3: CARGAR MODELO Y PREDICCIÓN MANUAL
-# ==========================================================
 
 def escenario3():
 
     st.markdown("## Escenario 3: Cargar Modelo y Realizar Predicción Manual")
 
     st.markdown("""
-    En este escenario, el usuario puede cargar un modelo previamente entrenado en formato `.pkl`.
-    Posteriormente, se ingresan manualmente los datos de un estudiante para estimar si presenta
+    En este escenario el usuario puede cargar un modelo entrenado en formato `.pkl`
+    y luego ingresar manualmente los datos de un estudiante para predecir si presenta
     riesgo de abandono académico.
     """)
 
     # ======================================================
-    # SUBIR MODELO ENTRENADO
+    # SUBIR MODELO
     # ======================================================
-
-    st.markdown("### Suba el modelo pre-entrenado")
 
     modelo_entrenado = st.file_uploader(
         "Suba el modelo entrenado en formato .pkl",
@@ -32,7 +26,7 @@ def escenario3():
 
     if modelo_entrenado is None:
         st.info("Por favor, suba un modelo entrenado en formato .pkl para continuar.")
-        return
+        st.stop()
 
     # ======================================================
     # CARGAR MODELO
@@ -41,245 +35,191 @@ def escenario3():
     try:
         carga_modelo = pickle.load(modelo_entrenado)
         st.success("Modelo cargado correctamente.")
-
     except Exception as e:
         st.error(f"Error al cargar el modelo: {e}")
-        return
+        st.stop()
 
     # ======================================================
-    # FORMULARIO DE DATOS DEL ESTUDIANTE
+    # FORMULARIO
     # ======================================================
 
     st.sidebar.markdown("## Datos del estudiante")
 
     datos_dicc = {}
 
-    program = st.sidebar.selectbox(
+    datos_dicc["program"] = st.sidebar.selectbox(
         "Programa académico",
-        ["ASS", "TRF", "TOC"],
-        key="program_selectbox"
+        ["ASS", "TRF", "TOC"]
     )
-    datos_dicc["program"] = program
 
-    age = st.sidebar.number_input(
-        "Edad del estudiante",
+    datos_dicc["age"] = st.sidebar.number_input(
+        "Edad",
         min_value=15,
         max_value=80,
-        value=25,
-        key="age_input"
+        value=25
     )
-    datos_dicc["age"] = age
 
-    gender = st.sidebar.selectbox(
+    datos_dicc["gender"] = st.sidebar.selectbox(
         "Género",
-        ["F", "M"],
-        key="gender_selectbox"
+        ["F", "M"]
     )
-    datos_dicc["gender"] = gender
 
-    socioeconomic_level = st.sidebar.selectbox(
+    datos_dicc["socioeconomic_level"] = st.sidebar.selectbox(
         "Nivel socioeconómico",
-        [1, 2, 3, 4],
-        key="socioeconomic_level_selectbox"
+        [1, 2, 3, 4]
     )
-    datos_dicc["socioeconomic_level"] = socioeconomic_level
 
-    employed = st.sidebar.selectbox(
+    datos_dicc["employed"] = st.sidebar.selectbox(
         "¿Tiene empleo?",
-        ["Si", "No"],
-        key="employed_selectbox"
+        ["Si", "No"]
     )
-    datos_dicc["employed"] = employed
 
-    semester = st.sidebar.selectbox(
-        "Semestre académico",
-        [1, 2, 3, 4],
-        key="semester_selectbox"
+    datos_dicc["semester"] = st.sidebar.selectbox(
+        "Semestre",
+        [1, 2, 3, 4]
     )
-    datos_dicc["semester"] = semester
 
-    login_frequency = st.sidebar.number_input(
+    datos_dicc["login_frequency"] = st.sidebar.number_input(
         "Frecuencia de ingreso al LMS",
         min_value=0.0,
         max_value=1000.0,
-        value=100.0,
-        key="login_frequency_input"
+        value=100.0
     )
-    datos_dicc["login_frequency"] = login_frequency
 
-    forum_participation = st.sidebar.number_input(
+    datos_dicc["forum_participation"] = st.sidebar.number_input(
         "Participación en foros",
         min_value=0.0,
         max_value=1000.0,
-        value=100.0,
-        key="forum_participation_input"
+        value=100.0
     )
-    datos_dicc["forum_participation"] = forum_participation
 
-    task_submissions = st.sidebar.number_input(
-        "Número de tareas enviadas",
+    datos_dicc["task_submissions"] = st.sidebar.number_input(
+        "Tareas enviadas",
         min_value=0.0,
         max_value=100.0,
-        value=20.0,
-        key="task_submissions_input"
+        value=20.0
     )
-    datos_dicc["task_submissions"] = task_submissions
 
-    late_submissions = st.sidebar.number_input(
-        "Número de tareas entregadas tarde",
+    datos_dicc["late_submissions"] = st.sidebar.number_input(
+        "Tareas entregadas tarde",
         min_value=0.0,
         max_value=50.0,
-        value=2.0,
-        key="late_submissions_input"
+        value=2.0
     )
-    datos_dicc["late_submissions"] = late_submissions
 
-    connection_time = st.sidebar.number_input(
-        "Tiempo de conexión en el LMS",
+    datos_dicc["connection_time"] = st.sidebar.number_input(
+        "Tiempo de conexión",
         min_value=0.0,
         max_value=5000.0,
-        value=500.0,
-        key="connection_time_input"
+        value=500.0
     )
-    datos_dicc["connection_time"] = connection_time
 
-    resource_views = st.sidebar.number_input(
+    datos_dicc["resource_views"] = st.sidebar.number_input(
         "Visualizaciones de recursos",
         min_value=0.0,
         max_value=5000.0,
-        value=500.0,
-        key="resource_views_input"
+        value=500.0
     )
-    datos_dicc["resource_views"] = resource_views
 
-    final_grade = st.sidebar.number_input(
+    datos_dicc["final_grade"] = st.sidebar.number_input(
         "Calificación final",
         min_value=0.0,
         max_value=5.0,
         value=3.5,
-        step=0.1,
-        key="final_grade_input"
+        step=0.1
     )
-    datos_dicc["final_grade"] = final_grade
-
-    # ======================================================
-    # CREAR DATAFRAME
-    # ======================================================
 
     dataset_nuevo = pd.DataFrame(datos_dicc, index=[0])
 
-    st.markdown("### Datos ingresados para la predicción")
-    st.write(dataset_nuevo)
+    st.markdown("### Datos ingresados")
+    st.dataframe(dataset_nuevo)
 
     # ======================================================
-    # PREPROCESAMIENTO
+    # CODIFICACIÓN CATEGÓRICA
     # ======================================================
 
-    dataset_procesado = dataset_nuevo.copy()
-
-    # Codificar variables categóricas
-    columnas_categoricas = dataset_procesado.select_dtypes(
+    columnas_categoricas = dataset_nuevo.select_dtypes(
         include=["object"]
     ).columns
 
     for columna in columnas_categoricas:
         encoder = LabelEncoder()
-        dataset_procesado[columna] = encoder.fit_transform(
-            dataset_procesado[columna].astype(str)
+        dataset_nuevo[columna] = encoder.fit_transform(
+            dataset_nuevo[columna].astype(str)
         )
 
-    # Escalar variables numéricas
-    columnas_numericas = [
-        "age",
-        "socioeconomic_level",
-        "semester",
-        "login_frequency",
-        "forum_participation",
-        "task_submissions",
-        "late_submissions",
-        "connection_time",
-        "resource_views",
-        "final_grade"
-    ]
+    # ======================================================
+    # ORDENAR COLUMNAS SEGÚN MODELO
+    # ======================================================
 
-    scaler = StandardScaler()
-    dataset_procesado[columnas_numericas] = scaler.fit_transform(
-        dataset_procesado[columnas_numericas]
-    )
+    if hasattr(carga_modelo, "feature_names_in_"):
 
-    st.markdown("### Datos procesados para el modelo")
+        columnas_modelo = list(carga_modelo.feature_names_in_)
 
-    if st.checkbox("Mostrar datos procesados"):
-        st.write(dataset_procesado)
+        columnas_faltantes = [
+            col for col in columnas_modelo
+            if col not in dataset_nuevo.columns
+        ]
+
+        columnas_sobrantes = [
+            col for col in dataset_nuevo.columns
+            if col not in columnas_modelo
+        ]
+
+        if len(columnas_faltantes) > 0:
+            st.error("Faltan columnas requeridas por el modelo:")
+            st.write(columnas_faltantes)
+            st.stop()
+
+        if len(columnas_sobrantes) > 0:
+            dataset_nuevo = dataset_nuevo.drop(
+                columns=columnas_sobrantes
+            )
+
+        dataset_nuevo = dataset_nuevo[columnas_modelo]
+
+    st.markdown("### Datos enviados al modelo")
+    st.dataframe(dataset_nuevo)
 
     # ======================================================
     # PREDICCIÓN
     # ======================================================
 
     try:
-        prediccion_modelo = carga_modelo.predict(dataset_procesado)
-        prediction_proba_modelo = carga_modelo.predict_proba(dataset_procesado)
-
+        prediccion_modelo = carga_modelo.predict(dataset_nuevo)
+        prediction_proba_modelo = carga_modelo.predict_proba(dataset_nuevo)
     except Exception as e:
         st.error(f"Error al realizar la predicción: {e}")
-        st.warning(
-            "Verifique que el modelo cargado haya sido entrenado con las mismas variables "
-            "y el mismo orden de columnas."
-        )
-        return
+        st.stop()
+
+    prediccion = prediccion_modelo[0]
+
+    probabilidad_no = prediction_proba_modelo[0][0] * 100
+    probabilidad_si = prediction_proba_modelo[0][1] * 100
 
     # ======================================================
     # RESULTADOS
     # ======================================================
 
-    prediccion = prediccion_modelo[0]
-
-    probabilidad_permanencia = prediction_proba_modelo[0][0] * 100
-    probabilidad_abandono = prediction_proba_modelo[0][1] * 100
-
-    col_pred, col_prob = st.columns((5, 5))
-
-    with col_pred:
-        st.subheader("Predicción del modelo")
-
-        if prediccion == 1:
-            st.error("Sí abandono")
-        else:
-            st.success("No abandono")
-
-    with col_prob:
-        st.subheader("Probabilidades")
-
-        df_resultado = pd.DataFrame({
-            "Clase": ["No abandono", "Sí abandono"],
-            "Probabilidad (%)": [
-                round(probabilidad_permanencia, 2),
-                round(probabilidad_abandono, 2)
-            ]
-        })
-
-        st.write(df_resultado)
-
-    # ======================================================
-    # MENSAJE INTERPRETATIVO
-    # ======================================================
-
-    st.divider()
+    st.subheader("Resultado de la predicción")
 
     if prediccion == 1:
-        st.markdown(
-            f"### El estudiante tiene una probabilidad del "
-            f"{probabilidad_abandono:.2f}% de abandonar la formación."
+        st.error(
+            f"El estudiante tiene una probabilidad del {probabilidad_si:.2f}% de abandonar la formación."
         )
     else:
-        st.markdown(
-            f"### El estudiante tiene una probabilidad del "
-            f"{probabilidad_permanencia:.2f}% de permanecer en la formación."
+        st.success(
+            f"El estudiante tiene una probabilidad del {probabilidad_no:.2f}% de permanecer en la formación."
         )
 
+    st.subheader("Probabilidades")
 
-# ==========================================================
-# EJECUTAR ESCENARIO
-# ==========================================================
+    df_resultado = pd.DataFrame({
+        "Clase": ["No abandono", "Sí abandono"],
+        "Probabilidad (%)": [
+            round(probabilidad_no, 2),
+            round(probabilidad_si, 2)
+        ]
+    })
 
-escenario3()
+    st.dataframe(df_resultado)
