@@ -2,136 +2,180 @@ import streamlit as st
 import pandas as pd
 import pickle
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+
 
 def escenario_1():
-    st.markdown("## Escenario 1: Predicción Manual de Abandono de Clientes")
+    st.markdown("## Escenario 1: Predicción Manual de Abandono de Estudiantes")
+
     st.markdown("""
-    En este escenario, se te presentará un formulario para ingresar manualmente los datos de un cliente. A partir de estos datos, el modelo de regresión logística predecirá la probabilidad de abandono del cliente.
-    ** Instrucciones:**
-    - Completa el formulario con los datos del cliente.
-    - Haz clic en el botón "Predecir" para obtener la probabilidad de abandono.
+    En este escenario se presenta un formulario para ingresar manualmente los datos de un estudiante.
+    A partir de estos datos, el modelo entrenado predice si el estudiante presenta riesgo de abandono.
     """)
-    
-    # Cargar el modelo entrenado
-    carga_modelo=pickle.load(open('modelo_entrenado.pkl', 'rb'))
-    column=["PersonaMayor", "Socio", "Dependientes", "Permanencia", "ServicioTelefonico", "VariasLineas", "ServicioInternet", 
-            "SeguridadLinea", "CopiaSeguridadLinea","ProteccionDispositivo", "ServicioTecnico", "ServicioTV", "ServicioPeliculas", 
-            "Contrato", "FacturacionElectronica", "MetodoPago", "RecargoMensual", "TotalRecargo"]
-    datos_dicc={}
-    if "Genero" in column:
-        Genero=st.sidebar.selectbox("Genero", ("Femenino", "Masculino"),key='genero_selectbox')
-        datos_dicc['Genero']=Genero
 
-    if "PersonaMayor" in column:
-        PersonaMayor=st.sidebar.selectbox("Es una Persona Adulta Mayor ?", (0, 1), key='persona_mayor_selectbox')
-        datos_dicc["PersonaMayor"]=PersonaMayor
-        
-   
-    if "Socio" in column:
-        Socio=st.sidebar.selectbox('Es un Socio ?', ("Si","No"), key='socio_selectbox')
-        datos_dicc["Socio"]=Socio
+    # Cargar modelo entrenado
+    with open("modelo_entrenado.pkl", "rb") as archivo:
+        carga_modelo = pickle.load(archivo)
 
-    if "Dependientes" in column:
-        Dependientes=st.sidebar.selectbox('¿Eres Dependientes ?', ("Si","No"), key='dependientes_selectbox')
-        datos_dicc["Dependientes"]=Dependientes
+    datos_dicc = {}
 
-    if "Permanencia" in column:
-        Permanencia=st.sidebar.number_input('¿Cuántos meses tiene su contrato?',0,72,29, key='permanencia_number_input')
-        datos_dicc["Permanencia"]=Permanencia
+    # Variables categóricas
+    program = st.sidebar.selectbox(
+        "¿En qué programa está matriculado?",
+        ["ASS", "TRF", "TOC"]
+    )
+    datos_dicc["program"] = program
 
-    if "ServicioTelefonico" in column:
-        ServicioTelefonico=st.sidebar.selectbox('¿Tiene Servicio Telefónico ?', ("Si","No"), key='servicio_telefonico_selectbox')
-        datos_dicc["ServicioTelefonico"]=ServicioTelefonico
+    gender = st.sidebar.selectbox(
+        "Género",
+        ["F", "M"]
+    )
+    datos_dicc["gender"] = gender
 
-    if "VariasLineas" in column:
-        VariasLineas=st.sidebar.selectbox('¿Tiene Varias Lineas ?', ("Si","No","Sin Servicio Telefónico"), key='varias_lineas_selectbox')
-        datos_dicc["VariasLineas"]=VariasLineas
+    employed = st.sidebar.selectbox(
+        "¿Tiene empleo?",
+        ["Si", "No"]
+    )
+    datos_dicc["employed"] = employed
 
-    if "ServicioInternet" in column:
-        ServicioInternet=st.sidebar.selectbox('Tiene Servicio de Internet ?', ("DLS","No","Fibra Óptica"), key='servicio_internet_selectbox')
-        datos_dicc["ServicioInternet"]=ServicioInternet
+    # Variables numéricas
+    age = st.sidebar.number_input(
+        "Edad",
+        min_value=15,
+        max_value=80,
+        value=25
+    )
+    datos_dicc["age"] = age
 
-    if "SeguridadLinea" in column:
-        SeguridadLinea=st.sidebar.selectbox('Tiene Seguridad en la Linea ?', ("Si","No","Sin Servicio"), key='seguridad_linea_selectbox')
-        datos_dicc["SeguridadLinea"]=SeguridadLinea
+    socioeconomic_level = st.sidebar.selectbox(
+        "Nivel socioeconómico",
+        [1, 2, 3, 4]
+    )
+    datos_dicc["socioeconomic_level"] = socioeconomic_level
 
-    if "CopiaSeguridadLinea" in column:
-        CopiaSeguridadLinea=st.sidebar.selectbox('Tiene Copia de Seguridad en la Linea ?', ("Si","No","Sin Servicio"), key='copia_seguridad_linea_selectbox')
-        datos_dicc["CopiaSeguridadLinea"]=CopiaSeguridadLinea
+    semester = st.sidebar.selectbox(
+        "Semestre",
+        [1, 2, 3, 4]
+    )
+    datos_dicc["semester"] = semester
 
-    if "ProteccionDispositivo" in column:
-        ProteccionDispositivo=st.sidebar.selectbox('Tiene Proteccion de Dispositivo ?', ("Si","No","Sin Servicio"), key='proteccion_dispositivo_selectbox')
-        datos_dicc["ProteccionDispositivo"]=ProteccionDispositivo
+    login_frequency = st.sidebar.number_input(
+        "Frecuencia de ingreso al LMS",
+        min_value=0.0,
+        max_value=1000.0,
+        value=100.0
+    )
+    datos_dicc["login_frequency"] = login_frequency
 
-    if "ServicioTecnico" in column:
-        ServicioTecnico=st.sidebar.selectbox('Tiene Servicio Técnico ?', ("Si","No","Sin Servicio"), key='servicio_tecnico_selectbox')
-        datos_dicc["ServicioTecnico"]=ServicioTecnico
+    forum_participation = st.sidebar.number_input(
+        "Participación en foros",
+        min_value=0.0,
+        max_value=1000.0,
+        value=100.0
+    )
+    datos_dicc["forum_participation"] = forum_participation
 
-    if "ServicioTV" in column:
-        ServicioTv=st.sidebar.selectbox('Tiene Servicio de TV ?', ("Si","No","Sin Servicio"), key='servicio_tv_selectbox')
-        datos_dicc["ServicioTV"]=ServicioTv
+    task_submissions = st.sidebar.number_input(
+        "Número de tareas enviadas",
+        min_value=0.0,
+        max_value=100.0,
+        value=20.0
+    )
+    datos_dicc["task_submissions"] = task_submissions
 
-    if "ServicioPeliculas" in column:
-        ServicioPeliculas=st.sidebar.selectbox('Tiene Servicio de Peliculas ?', ("Si","No","Sin Servicio"), key='servicio_peliculas_selectbox')
-        datos_dicc["ServicioPeliculas"]=ServicioPeliculas
+    late_submissions = st.sidebar.number_input(
+        "Número de tareas entregadas tarde",
+        min_value=0.0,
+        max_value=50.0,
+        value=2.0
+    )
+    datos_dicc["late_submissions"] = late_submissions
 
-    if "Contrato" in column:
-        Contrato=st.sidebar.selectbox("Tipo de Contrato", ("Mes a Mes", "Un Año", "Dos Años"), key='contrato_selectbox')
-        datos_dicc["Contrato"]=Contrato
+    connection_time = st.sidebar.number_input(
+        "Tiempo de conexión",
+        min_value=0.0,
+        max_value=5000.0,
+        value=500.0
+    )
+    datos_dicc["connection_time"] = connection_time
 
-    if "FacturacionElectronica" in column:
-        FacturacionElectronica=st.sidebar.selectbox('Tiene Facturación Electrónica ?', ("Si","No"), key='facturacion_electronica_selectbox')
-        datos_dicc["FacturacionElectronica"]=FacturacionElectronica
+    resource_views = st.sidebar.number_input(
+        "Visualizaciones de recursos",
+        min_value=0.0,
+        max_value=5000.0,
+        value=500.0
+    )
+    datos_dicc["resource_views"] = resource_views
 
-    if "MetodoPago" in column:
-        MetodoPago=st.sidebar.selectbox('¿Cuál es el método de Pago?', ("Cheque Electrónico", "Cheque por correo","Transferencia bancaria(automática)", "Tarjeta de Crédito (automática)"), key='metodo_pago_selectbox')
-        datos_dicc["MetodoPago"]=MetodoPago
+    final_grade = st.sidebar.number_input(
+        "Calificación final",
+        min_value=0.0,
+        max_value=5.0,
+        value=3.5,
+        step=0.1
+    )
+    datos_dicc["final_grade"] = final_grade
 
-    if "RecargoMensual" in column:
-        RecargoMensual=st.sidebar.number_input('Recargo Mensual', 0.00, 200.00,70.35, key='recargo_mensual_number_input')
-        datos_dicc["RecargoMensual"]=RecargoMensual
+    # Crear dataframe
+    dataset_nuevo = pd.DataFrame(datos_dicc, index=[0])
 
-    if "TotalRecargo" in column:
-        TotalRecargo=st.sidebar.number_input('Recargo Anual',0.00,10000.00,1000.00,key='total_Recargo_number_input')
-        datos_dicc["TotalRecargo"]=TotalRecargo
-
-    dataset_nuevo=pd.DataFrame(datos_dicc, index=[0])
-    st.markdown("### Actualmente usando parámetros de entrada(que se muestran a continuación):")
+    st.markdown("### Datos ingresados para la predicción")
     st.write(dataset_nuevo)
 
-    # Preprocesamiento de Predicciones
+    # Codificación categórica
+    for columna in dataset_nuevo.select_dtypes(include=["object"]).columns:
+        encoder = LabelEncoder()
+        dataset_nuevo[columna] = encoder.fit_transform(dataset_nuevo[columna])
 
-    for i in dataset_nuevo.select_dtypes(include=['object']).columns:
-        dataset_nuevo[i] = LabelEncoder().fit_transform(dataset_nuevo[i])
-        scaler=StandardScaler().fit(dataset_nuevo[["TotalRecargo"]])
-        dataset_nuevo[["TotalRecargo"]]=scaler.transform(dataset_nuevo[["TotalRecargo"]])
-        scaler=StandardScaler().fit(dataset_nuevo[["RecargoMensual"]])
-        dataset_nuevo[["RecargoMensual"]]=scaler.transform(dataset_nuevo[["RecargoMensual"]])
-    # Realizar la predicción
-    prediccion_modelo=carga_modelo.predict(dataset_nuevo)
-    prediction_proba_modelo=carga_modelo.predict_proba(dataset_nuevo)
-    col_nada_predi,col_nada_pro=st.columns((5,5))
-    with col_nada_predi:
-        st.subheader('Predicción')
-        df_abandono=pd.DataFrame(prediccion_modelo, columns=['Abandono'])
-        df_abandono=df_abandono.map(lambda x: "No" if x== 0 else "Si")
-        st.write(df_abandono)
-    with col_nada_pro:
-        st.subheader('Probabilidad de Predicción')
-        df_abandono=pd.DataFrame(
-            np.argmax(prediction_proba_modelo,axis=1), columns=["Abandono"])
-        df_abandono=df_abandono.map(lambda x: "No" if x== 0 else "Si")
-        probabilidades=np.where(df_abandono["Abandono"]=="No", prediction_proba_modelo[:,0], prediction_proba_modelo[:,1])
-        df_resultado=pd.DataFrame({"Abandono":df_abandono["Abandono"],"Probabilidad":probabilidades})
-        st.write(df_resultado)
-    for index,row in df_resultado.iterrows():
-        abandono=row.iloc[0]
-        probabilidad=row.iloc[1]*100
-        if row["Abandono"]=="Si":
-            st.markdown(f"### El cliente tiene una probabilidad del {probabilidad:.2f}% de abandonar el servicio.")
-        else:
-            st.markdown(f"###El cliente tiene una probabilidad del {probabilidad:.2f}% de permanecer con el servicio.")
+    # Escalado de variables numéricas
+    columnas_numericas = [
+        "age",
+        "socioeconomic_level",
+        "semester",
+        "login_frequency",
+        "forum_participation",
+        "task_submissions",
+        "late_submissions",
+        "connection_time",
+        "resource_views",
+        "final_grade"
+    ]
+
+    scaler = StandardScaler()
+    dataset_nuevo[columnas_numericas] = scaler.fit_transform(
+        dataset_nuevo[columnas_numericas]
+    )
+
+    st.markdown("### Datos procesados para el modelo")
+    st.write(dataset_nuevo)
+
+    # Realizar predicción
+    prediccion_modelo = carga_modelo.predict(dataset_nuevo)
+    prediction_proba_modelo = carga_modelo.predict_proba(dataset_nuevo)
+
+    prediccion = prediccion_modelo[0]
+    probabilidad_no = prediction_proba_modelo[0][0] * 100
+    probabilidad_si = prediction_proba_modelo[0][1] * 100
+
+    st.subheader("Resultado de la predicción")
+
+    if prediccion == 1:
+        st.error(
+            f"El estudiante tiene una probabilidad del {probabilidad_si:.2f}% de abandonar la formación."
+        )
+    else:
+        st.success(
+            f"El estudiante tiene una probabilidad del {probabilidad_no:.2f}% de permanecer en la formación."
+        )
+
+    st.subheader("Probabilidades del modelo")
+
+    df_resultado = pd.DataFrame({
+        "Clase": ["No abandona", "Sí abandona"],
+        "Probabilidad (%)": [probabilidad_no, probabilidad_si]
+    })
+
+    st.write(df_resultado)
+
+
 escenario_1()
-

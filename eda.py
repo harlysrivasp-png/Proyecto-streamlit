@@ -8,13 +8,19 @@ import seaborn as sns
 from io import StringIO
 
 
+# ==========================================================
+# ANÁLISIS EXPLORATORIO DE DATOS
+# ==========================================================
+
 def eda():
 
-    st.markdown("# :bar_chart: Análisis Exploratorio de Datos (EDA)")
+    st.markdown("# 📊 Análisis Exploratorio de Datos (EDA)")
 
     st.write("""
-    En este análisis exploratorio de datos, nos enfocaremos en comprender
-    las variables y patrones subyacentes que afectan el abandono de clientes.
+    Este módulo permite explorar el dataset de abandono estudiantil.
+    El objetivo es identificar patrones generales, distribución de variables,
+    valores faltantes, relaciones entre variables numéricas y posibles factores
+    asociados al abandono académico.
     """)
 
     st.divider()
@@ -24,8 +30,6 @@ def eda():
     # ==========================================================
 
     if "df" not in st.session_state:
-
-        st.image("images/upload-cloud-data.png", width=300)
 
         st.warning(
             "Debe ingresar el dataset primero. Diríjase a la página principal."
@@ -37,7 +41,24 @@ def eda():
     # DATASET
     # ==========================================================
 
-    data = st.session_state.df
+    data = st.session_state.df.copy()
+
+    # Normalizar nombres de columnas
+    data.columns = (
+        data.columns
+        .str.strip()
+        .str.lower()
+        .str.replace(" ", "_")
+    )
+
+    data = data.rename(
+        columns={
+            "socioeconomic_level": "socioeconomic_level",
+            "socioecoNomic_level": "socioeconomic_level",
+            "task_submisSions": "task_submissions",
+            "late_submisSions": "late_submissions"
+        }
+    )
 
     # ==========================================================
     # VARIABLES
@@ -51,185 +72,264 @@ def eda():
         data.select_dtypes(include="number").columns
     )
 
-    seleccion_grafica_categoria = st.sidebar.selectbox(
-        "Selecciona una variable categórica",
-        columnas_categoricas
-    )
+    if len(columnas_categoricas) == 0:
+        st.warning("No se encontraron variables categóricas en el dataset.")
+        seleccion_grafica_categoria = None
+    else:
+        seleccion_grafica_categoria = st.sidebar.selectbox(
+            "Seleccione una variable categórica",
+            columnas_categoricas
+        )
 
-    seleccion_grafica_numerica = st.sidebar.selectbox(
-        "Selecciona una variable numérica",
-        columnas_numericas
-    )
+    if len(columnas_numericas) == 0:
+        st.warning("No se encontraron variables numéricas en el dataset.")
+        seleccion_grafica_numerica = None
+    else:
+        seleccion_grafica_numerica = st.sidebar.selectbox(
+            "Seleccione una variable numérica",
+            columnas_numericas
+        )
 
     # ==========================================================
     # MÉTRICAS
     # ==========================================================
 
-    st.markdown("## Métricas de los Datos")
+    st.markdown("## Métricas generales del dataset")
 
     col1, col2, col3, col4, col5 = st.columns(5)
 
-    col1.metric("Número de filas", data.shape[0])
-
-    col2.metric("Número de columnas", data.shape[1])
-
-    col3.metric("Datos duplicados", data.duplicated().sum())
-
-    col4.metric(
-        "Variables categóricas",
-        data.select_dtypes(include="object").shape[1]
-    )
-
-    col5.metric(
-        "Variables numéricas",
-        data.select_dtypes(include="number").shape[1]
-    )
+    col1.metric("Filas", data.shape[0])
+    col2.metric("Columnas", data.shape[1])
+    col3.metric("Duplicados", data.duplicated().sum())
+    col4.metric("Categóricas", data.select_dtypes(include="object").shape[1])
+    col5.metric("Numéricas", data.select_dtypes(include="number").shape[1])
 
     st.divider()
 
     # ==========================================================
-    # DATOS GRÁFICOS
+    # VISTA PREVIA DEL DATASET
     # ==========================================================
 
-    st.markdown("## Gráficos")
+    st.markdown("## Vista previa del dataset")
 
-    c1, c2 = st.columns(2)
-
-    valores_categoricos = (
-        data[seleccion_grafica_categoria]
-        .value_counts()
-        .reset_index()
-    )
-
-    valores_categoricos.columns = [
-        seleccion_grafica_categoria,
-        "count"
-    ]
-
-    valores_numericos = data[seleccion_grafica_numerica]
-
-    # ==========================================================
-    # BAR CHART
-    # ==========================================================
-
-    with c1:
-
-        st.subheader("Gráfico de Barras")
-
-        st.bar_chart(
-            data=valores_categoricos,
-            x=seleccion_grafica_categoria,
-            y="count"
-        )
-
-    # ==========================================================
-    # PIE CHART
-    # ==========================================================
-
-    with c2:
-
-        st.subheader("Gráfico Circular")
-
-        fig, ax = plt.subplots(figsize=(6, 6))
-
-        ax.pie(
-            valores_categoricos["count"],
-            labels=valores_categoricos[seleccion_grafica_categoria],
-            autopct="%1.1f%%",
-            startangle=140
-        )
-
-        ax.set_title(
-            f"Gráfico circular - {seleccion_grafica_categoria}"
-        )
-
-        st.pyplot(fig)
+    if st.checkbox("Mostrar primeras filas"):
+        st.dataframe(data.head())
 
     st.divider()
 
     # ==========================================================
-    # BOXPLOT
+    # DISTRIBUCIÓN DE VARIABLE OBJETIVO
     # ==========================================================
 
-    gra1, gra2 = st.columns(2)
+    if "dropout" in data.columns:
 
-    with gra1:
+        st.markdown("## Distribución de la variable objetivo: dropout")
 
-        st.subheader("BoxPlot")
+        valores_dropout = data["dropout"].value_counts().reset_index()
+        valores_dropout.columns = ["dropout", "count"]
 
-        fig_box = px.box(
-            data,
-            x=seleccion_grafica_categoria,
-            y=seleccion_grafica_numerica,
-            color=seleccion_grafica_categoria
-        )
+        col_d1, col_d2 = st.columns(2)
 
-        st.plotly_chart(fig_box, use_container_width=True)
-
-    # ==========================================================
-    # HISTOGRAMA
-    # ==========================================================
-
-    with gra2:
-
-        st.subheader("Histograma")
-
-        def sturges_rule(datos):
-
-            n = len(datos)
-
-            k = 1 + math.log2(n)
-
-            return int(k)
-
-        k = sturges_rule(valores_numericos)
-
-        fig_hist = go.Figure()
-
-        fig_hist.add_trace(
-            go.Histogram(
-                x=valores_numericos,
-                nbinsx=k
+        with col_d1:
+            fig_dropout_bar = px.bar(
+                valores_dropout,
+                x="dropout",
+                y="count",
+                text="count",
+                title="Distribución de abandono estudiantil"
             )
+
+            fig_dropout_bar.update_layout(
+                xaxis_title="Abandono",
+                yaxis_title="Cantidad de estudiantes"
+            )
+
+            st.plotly_chart(fig_dropout_bar, use_container_width=True)
+
+        with col_d2:
+            fig_dropout_pie = px.pie(
+                valores_dropout,
+                names="dropout",
+                values="count",
+                title="Proporción de abandono estudiantil",
+                hole=0.3
+            )
+
+            st.plotly_chart(fig_dropout_pie, use_container_width=True)
+
+        st.divider()
+
+    # ==========================================================
+    # GRÁFICOS GENERALES
+    # ==========================================================
+
+    st.markdown("## Gráficos exploratorios")
+
+    if seleccion_grafica_categoria is not None:
+
+        c1, c2 = st.columns(2)
+
+        valores_categoricos = (
+            data[seleccion_grafica_categoria]
+            .value_counts()
+            .reset_index()
         )
 
-        fig_hist.update_layout(
-            title=f"Histograma - {seleccion_grafica_numerica}",
-            xaxis_title=seleccion_grafica_numerica,
-            yaxis_title="Frecuencia"
-        )
+        valores_categoricos.columns = [
+            seleccion_grafica_categoria,
+            "count"
+        ]
 
-        st.plotly_chart(fig_hist, use_container_width=True)
+        with c1:
+
+            st.subheader("Gráfico de barras")
+
+            fig_bar = px.bar(
+                valores_categoricos,
+                x=seleccion_grafica_categoria,
+                y="count",
+                text="count",
+                title=f"Distribución de {seleccion_grafica_categoria}"
+            )
+
+            fig_bar.update_layout(
+                xaxis_title=seleccion_grafica_categoria,
+                yaxis_title="Frecuencia"
+            )
+
+            st.plotly_chart(fig_bar, use_container_width=True)
+
+        with c2:
+
+            st.subheader("Gráfico circular")
+
+            fig_pie = px.pie(
+                valores_categoricos,
+                names=seleccion_grafica_categoria,
+                values="count",
+                title=f"Proporción de {seleccion_grafica_categoria}",
+                hole=0.3
+            )
+
+            st.plotly_chart(fig_pie, use_container_width=True)
 
     st.divider()
+
+    # ==========================================================
+    # BOXPLOT E HISTOGRAMA
+    # ==========================================================
+
+    if seleccion_grafica_categoria is not None and seleccion_grafica_numerica is not None:
+
+        gra1, gra2 = st.columns(2)
+
+        with gra1:
+
+            st.subheader("Boxplot")
+
+            fig_box = px.box(
+                data,
+                x=seleccion_grafica_categoria,
+                y=seleccion_grafica_numerica,
+                color=seleccion_grafica_categoria,
+                title=f"{seleccion_grafica_numerica} según {seleccion_grafica_categoria}"
+            )
+
+            st.plotly_chart(fig_box, use_container_width=True)
+
+        with gra2:
+
+            st.subheader("Histograma")
+
+            def sturges_rule(datos):
+
+                n = len(datos.dropna())
+
+                if n <= 1:
+                    return 1
+
+                k = 1 + math.log2(n)
+
+                return int(k)
+
+            k = sturges_rule(data[seleccion_grafica_numerica])
+
+            fig_hist = go.Figure()
+
+            fig_hist.add_trace(
+                go.Histogram(
+                    x=data[seleccion_grafica_numerica],
+                    nbinsx=k
+                )
+            )
+
+            fig_hist.update_layout(
+                title=f"Histograma - {seleccion_grafica_numerica}",
+                xaxis_title=seleccion_grafica_numerica,
+                yaxis_title="Frecuencia"
+            )
+
+            st.plotly_chart(fig_hist, use_container_width=True)
+
+        st.divider()
+
+    # ==========================================================
+    # GRÁFICOS CONTRA DROPOUT
+    # ==========================================================
+
+    if "dropout" in data.columns and len(columnas_numericas) > 0:
+
+        st.markdown("## Relación de variables numéricas con dropout")
+
+        variable_dropout = st.selectbox(
+            "Seleccione una variable numérica para comparar con dropout",
+            columnas_numericas
+        )
+
+        fig_dropout_box = px.box(
+            data,
+            x="dropout",
+            y=variable_dropout,
+            color="dropout",
+            title=f"{variable_dropout} según dropout"
+        )
+
+        st.plotly_chart(fig_dropout_box, use_container_width=True)
+
+        st.divider()
 
     # ==========================================================
     # MATRIZ DE CORRELACIÓN
     # ==========================================================
 
-    st.subheader("Mapa de Calor - Correlación")
+    st.subheader("Mapa de calor - Correlación")
 
-    data_corr = data.corr(numeric_only=True)
+    if len(columnas_numericas) > 1:
 
-    fig, ax = plt.subplots(figsize=(10, 6))
+        data_corr = data.corr(numeric_only=True)
 
-    sns.heatmap(
-        data_corr,
-        annot=True,
-        cmap="YlOrRd",
-        fmt=".2f",
-        ax=ax
-    )
+        fig, ax = plt.subplots(figsize=(10, 6))
 
-    st.pyplot(fig)
+        sns.heatmap(
+            data_corr,
+            annot=True,
+            cmap="YlOrRd",
+            fmt=".2f",
+            ax=ax
+        )
+
+        st.pyplot(fig)
+
+    else:
+        st.info("No hay suficientes variables numéricas para calcular correlación.")
 
     st.divider()
 
     # ==========================================================
-    # VALORES NULOS
+    # VALORES FALTANTES
     # ==========================================================
 
-    st.subheader("Mapa de Calor - Valores Faltantes")
+    st.subheader("Mapa de calor - Valores faltantes")
 
     binary_df = data.isnull().astype(int)
 
@@ -243,6 +343,12 @@ def eda():
         )
     )
 
+    fig_null.update_layout(
+        title="Mapa de valores faltantes",
+        xaxis_title="Variables",
+        yaxis_title="Registros"
+    )
+
     st.plotly_chart(fig_null, use_container_width=True)
 
     st.divider()
@@ -251,19 +357,15 @@ def eda():
     # INFORMACIÓN DATASET
     # ==========================================================
 
-    st.markdown("## Información sobre los Datos")
+    st.markdown("## Información sobre los datos")
 
     col_resu1, col_resu2 = st.columns(2)
 
-    # ==========================================================
-    # INFO DATAFRAME
-    # ==========================================================
-
     with col_resu1:
 
-        st.markdown("### Resumen Conciso")
+        st.markdown("### Resumen conciso")
 
-        if st.checkbox("Mostrar Resumen"):
+        if st.checkbox("Mostrar resumen del DataFrame"):
 
             info = StringIO()
 
@@ -273,15 +375,11 @@ def eda():
 
             st.code(texto_info)
 
-    # ==========================================================
-    # DATOS NULOS
-    # ==========================================================
-
     with col_resu2:
 
-        st.markdown("### Datos Nulos")
+        st.markdown("### Datos nulos")
 
-        if st.checkbox("Mostrar Datos Nulos"):
+        if st.checkbox("Mostrar datos nulos"):
 
             st.write(
                 data.isnull()
@@ -301,15 +399,15 @@ def eda():
 
         st.markdown("### Correlación")
 
-        if st.checkbox("Mostrar Correlación"):
+        if st.checkbox("Mostrar matriz de correlación"):
 
             st.write(data.corr(numeric_only=True))
 
     with col_resu4:
 
-        st.markdown("### Estadísticas Descriptivas")
+        st.markdown("### Estadísticas descriptivas")
 
-        if st.checkbox("Mostrar Estadísticas"):
+        if st.checkbox("Mostrar estadísticas descriptivas"):
 
             st.write(data.describe().round(2))
 

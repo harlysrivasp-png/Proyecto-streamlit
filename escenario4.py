@@ -2,155 +2,343 @@ import streamlit as st
 import pandas as pd
 import pickle
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from io import BytesIO
 import plotly.graph_objects as go
 import plotly.express as px
 
-def columnas(modelo):
-    columnas=None
-    if hasattr(modelo, 'feature_names_in_'):
-        columnas = modelo.feature_names_in_
-    elif hasattr(modelo, "named_steps"):
-        for step in modelo.named_steps.values():
-            if hasattr(step, "transformers_"):
-                columnas = []
-                for _,transformer ,column_indices in step.transformers_:
-                    if hasattr(transformer, "get_feature_names_out"):
-                        columnas.extend(transformer.get_feature_names_out(column_indices))
-                    else:
-                        columnas.extend(column_indices)
-                break
-    if columnas is not None:
-        return columnas
-    else:
-        return None
+
+# ==========================================================
+# FUNCIÓN PARA EXPORTAR RESULTADOS A EXCEL
+# ==========================================================
 
 def to_excel(df):
     output = BytesIO()
-    writer = pd.ExcelWriter(output, engine='openpyxl')
-    df.to_excel(writer, index=False, sheet_name='Hoja1')
-    writer.book.save(output)
+
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False, sheet_name="Predicciones")
+
     output.seek(0)
     return output
 
 
+# ==========================================================
+# FUNCIÓN PARA OBTENER COLUMNAS DEL MODELO
+# ==========================================================
+
+def obtener_columnas_modelo(modelo):
+    if hasattr(modelo, "feature_names_in_"):
+        return list(modelo.feature_names_in_)
+    return None
+
+
+# ==========================================================
+# ESCENARIO 4: CARGAR MODELO Y CSV PARA PREDICCIÓN MASIVA
+# ==========================================================
+
 def escenario_4():
-    datos_nuevos = st.sidebar.file_uploader("Sube su archivo CSV", type=["csv"])
-    st.markdown("### Suba el modelo pre-entrenado")
-    modelo_entrenado= st.file_uploader("Suba el modelo Entrenado", type=["pkl"])
-    if modelo_entrenado is not None and datos_nuevos is not None:
 
-        dataset_ingresado=pd.read_csv(datos_nuevos)
+    st.markdown("## Escenario 4: Predicción Masiva con Modelo Cargado")
+
+    st.markdown("""
+    En este escenario, el usuario puede cargar un modelo entrenado en formato `.pkl`
+    y un archivo CSV con registros de estudiantes. El sistema procesa los datos,
+    realiza la predicción de abandono académico y genera un reporte descargable.
+    """)
+
+    # ======================================================
+    # CARGA DE ARCHIVOS
+    # ======================================================
+
+    datos_nuevos = st.sidebar.file_uploader(
+        "Suba el archivo CSV con estudiantes",
+        type=["csv"]
+    )
+
+    modelo_entrenado = st.file_uploader(
+        "Suba el modelo entrenado en formato .pkl",
+        type=["pkl"]
+    )
+
+    if modelo_entrenado is None or datos_nuevos is None:
+        st.info("Por favor, suba el modelo entrenado (.pkl) y el archivo CSV para continuar.")
+        return
+
+    # ======================================================
+    # CARGAR MODELO
+    # ======================================================
+
+    try:
         carga_modelo = pickle.load(modelo_entrenado)
+        st.success("Modelo cargado correctamente.")
 
-        if st.checkbox("Mostrar Datos Ingresados"):
-            st.write(dataset_ingresado)
-        columnas_comunes= dataset_ingresado.columns.intersection(columnas(carga_modelo))
-        dataset_nuevo= dataset_ingresado[columnas_comunes]
-        st.divider()
-        st.markdown("### Datos a Predecir")
-        
-        if st.checkbox("Mostrar Datos que ingresan a la Predicción"):
-            st.write(dataset_nuevo)
+    except Exception as e:
+        st.error(f"Error al cargar el modelo: {e}")
+        return
 
-        for i in dataset_nuevo.select_dtypes(include='object').columns:
-            dataset_nuevo[i]= LabelEncoder().fit_transform(dataset_nuevo[i])
-            scaler= StandardScaler().fit(dataset_nuevo[["TotalRecargo"]])
-            dataset_nuevo[["TotalRecargo"]]= scaler.transform(dataset_nuevo[["TotalRecargo"]])
-            scaler= StandardScaler().fit(dataset_nuevo[["RecargoMensual"]])
-            dataset_nuevo[["RecargoMensual"]]= scaler.transform(dataset_nuevo[["RecargoMensual"]])
+    # ======================================================
+    # CARGAR CSV
+    # ======================================================
 
-        prediccion_modelo = carga_modelo.predict(dataset_nuevo)
-        prediction_proba_modelo= carga_modelo.predict_proba(dataset_nuevo)
-        df_abandono= pd.DataFrame(prediccion_modelo, columns=["Abandono"])  
-        df_abandono=df_abandono.map(lambda x: "No" if x == 0 else "Si") 
-        df_abandono=pd.DataFrame(prediction_proba_modelo. argmax(axis=1),columns=["Abandono"])
-        df_abandono=df_abandono.map(lambda x: "No" if x == 0 else "Si")
-        probabilidades=np.where(df_abandono["Abandono"]=="No", prediction_proba_modelo[:,0], prediction_proba_modelo[:,1])
+    try:
+        dataset_ingresado = pd.read_csv(datos_nuevos)
 
-        df_resultados= pd.DataFrame({"Abandono": df_abandono["Abandono"], "Probabilidad Abandono": probabilidades})
-        df_unido= pd.concat([dataset_ingresado, df_resultados], axis=1)
-        #df_unido = pd.concat([dataset, resultados], axis=1)
-        #df_unido = df_unido.loc[:, ~df_unido.columns.duplicated()]
-        csv_data=df_unido.to_csv(index=False)
+    except Exception as e:
+        st.error(f"Error al leer el archivo CSV: {e}")
+        return
 
-        st.divider()
-        st.markdown("### Datos con la Predicción")
-        mostrar_prediccion=st.checkbox("Mostrar Datos con Predicción Final")
-        
-        if mostrar_prediccion:
-            st.write(df_unido)
-        
-        st.divider()
-        st.markdown("### Gráficos de la Predicción")
-        col_gra1,col_gra2= st.columns((5,5))
-        valores_categoricas= df_unido["Abandono"].value_counts()
-        #valores_categoricas= df_unido["Abandono"].iloc[:, 0].value_counts()
-        colorscale=px.colors.sequential.YlOrBr
-        num_categorias= len(valores_categoricas.index)
-        step_size=int(len(colorscale)/num_categorias)
-        colores=colorscale[::step_size]
-        
-        with col_gra1:
-            fig=go.Figure()
+    if st.checkbox("Mostrar datos ingresados"):
+        st.write(dataset_ingresado)
 
-            fig.add_trace(go.Bar(
-                x=valores_categoricas.index,
-                y=valores_categoricas,
-                text=valores_categoricas,
-                textposition='auto',
-                hovertemplate='%{x}:<br>valores_categoricas:%{y}',
+    # ======================================================
+    # COLUMNAS REQUERIDAS
+    # ======================================================
+
+    columnas_requeridas = [
+        "program",
+        "age",
+        "gender",
+        "socioeconomic_level",
+        "employed",
+        "semester",
+        "login_frequency",
+        "forum_participation",
+        "task_submissions",
+        "late_submissions",
+        "connection_time",
+        "resource_views",
+        "final_grade"
+    ]
+
+    # Si el modelo trae nombres de columnas, se pueden usar
+    columnas_modelo = obtener_columnas_modelo(carga_modelo)
+
+    if columnas_modelo is not None:
+        columnas_requeridas = columnas_modelo
+
+    # ======================================================
+    # VALIDAR COLUMNAS
+    # ======================================================
+
+    columnas_faltantes = [
+        col for col in columnas_requeridas
+        if col not in dataset_ingresado.columns
+    ]
+
+    if len(columnas_faltantes) > 0:
+        st.error("El archivo CSV no contiene todas las columnas requeridas por el modelo.")
+        st.write("Columnas faltantes:")
+        st.write(columnas_faltantes)
+
+        st.write("Columnas requeridas:")
+        st.write(columnas_requeridas)
+        return
+
+    # ======================================================
+    # PREPARAR DATASET PARA PREDICCIÓN
+    # ======================================================
+
+    dataset_nuevo = dataset_ingresado[columnas_requeridas].copy()
+
+    st.divider()
+    st.markdown("### Datos que ingresan a la predicción")
+
+    if st.checkbox("Mostrar datos para predicción"):
+        st.write(dataset_nuevo)
+
+    # ======================================================
+    # PREPROCESAMIENTO
+    # ======================================================
+
+    dataset_procesado = dataset_nuevo.copy()
+
+    # Codificación de variables categóricas
+    columnas_categoricas = dataset_procesado.select_dtypes(
+        include=["object"]
+    ).columns
+
+    for columna in columnas_categoricas:
+        encoder = LabelEncoder()
+        dataset_procesado[columna] = encoder.fit_transform(
+            dataset_procesado[columna].astype(str)
+        )
+
+    # Escalado de variables numéricas reales del dataset
+    columnas_numericas = [
+        "age",
+        "socioeconomic_level",
+        "semester",
+        "login_frequency",
+        "forum_participation",
+        "task_submissions",
+        "late_submissions",
+        "connection_time",
+        "resource_views",
+        "final_grade"
+    ]
+
+    columnas_numericas = [
+        col for col in columnas_numericas
+        if col in dataset_procesado.columns
+    ]
+
+    scaler = StandardScaler()
+
+    if len(columnas_numericas) > 0:
+        dataset_procesado[columnas_numericas] = scaler.fit_transform(
+            dataset_procesado[columnas_numericas]
+        )
+
+    st.markdown("### Datos procesados para el modelo")
+
+    if st.checkbox("Mostrar datos procesados"):
+        st.write(dataset_procesado)
+
+    # ======================================================
+    # PREDICCIÓN
+    # ======================================================
+
+    try:
+        prediccion_modelo = carga_modelo.predict(dataset_procesado)
+        prediction_proba_modelo = carga_modelo.predict_proba(dataset_procesado)
+
+    except Exception as e:
+        st.error(f"Error al realizar la predicción: {e}")
+        st.warning(
+            "Verifique que el modelo haya sido entrenado con las mismas variables "
+            "y en el mismo orden que el archivo cargado."
+        )
+        return
+
+    # ======================================================
+    # RESULTADOS
+    # ======================================================
+
+    df_prediccion = pd.DataFrame(prediccion_modelo, columns=["Abandono"])
+
+    df_prediccion["Abandono"] = df_prediccion["Abandono"].map({
+        0: "No",
+        1: "Si"
+    })
+
+    probabilidad_permanencia = prediction_proba_modelo[:, 0] * 100
+    probabilidad_abandono = prediction_proba_modelo[:, 1] * 100
+
+    df_resultados = pd.DataFrame({
+        "Abandono": df_prediccion["Abandono"],
+        "Probabilidad_Permanencia (%)": probabilidad_permanencia.round(2),
+        "Probabilidad_Abandono (%)": probabilidad_abandono.round(2)
+    })
+
+    df_unido = pd.concat(
+        [
+            dataset_ingresado.reset_index(drop=True),
+            df_resultados.reset_index(drop=True)
+        ],
+        axis=1
+    )
+
+    csv_data = df_unido.to_csv(index=False).encode("utf-8")
+
+    st.divider()
+    st.markdown("### Datos con predicción final")
+
+    if st.checkbox("Mostrar datos con predicción final"):
+        st.write(df_unido)
+
+    # ======================================================
+    # GRÁFICOS
+    # ======================================================
+
+    st.divider()
+    st.markdown("### Gráficos de la predicción")
+
+    col_gra1, col_gra2 = st.columns((5, 5))
+
+    valores_abandono = df_unido["Abandono"].value_counts()
+
+    colorscale = px.colors.sequential.YlOrBr
+    num_categorias = len(valores_abandono.index)
+
+    if num_categorias > 0:
+        step_size = max(1, int(len(colorscale) / num_categorias))
+        colores = colorscale[::step_size]
+    else:
+        colores = colorscale
+
+    with col_gra1:
+        fig_bar = go.Figure()
+
+        fig_bar.add_trace(
+            go.Bar(
+                x=valores_abandono.index,
+                y=valores_abandono.values,
+                text=valores_abandono.values,
+                textposition="auto",
+                hovertemplate="Predicción: %{x}<br>Cantidad: %{y}<extra></extra>",
                 marker=dict(color=colores)
-            ))
-
-            fig.update_layout(
-                title=f"Gráfico de Barras-Predicción",
-                xaxis_title="Género",
-                yaxis_title="valores_categoricas",
-                font=dict(size=12),
-                width=500,
-                height=500,
             )
-            st.plotly_chart(fig)
+        )
 
-        with col_gra2:
-            fig=go.Figure()
-            fig.add_trace(go.Pie(
-                labels=valores_categoricas.index,
-                values=valores_categoricas.values,
-                textinfo='label+percent',
-                insidetextorientation='radial',
-                hovertemplate='%{label}:<br>valores_categoricas:%{value} (%{percent})',
+        fig_bar.update_layout(
+            title="Distribución de Predicción de Abandono",
+            xaxis_title="Predicción de abandono",
+            yaxis_title="Cantidad de estudiantes",
+            font=dict(size=12),
+            width=500,
+            height=500
+        )
+
+        st.plotly_chart(fig_bar, use_container_width=True)
+
+    with col_gra2:
+        fig_pie = go.Figure()
+
+        fig_pie.add_trace(
+            go.Pie(
+                labels=valores_abandono.index,
+                values=valores_abandono.values,
+                textinfo="label+percent",
+                insidetextorientation="radial",
+                hovertemplate="Predicción: %{label}<br>Cantidad: %{value}<br>Porcentaje: %{percent}<extra></extra>",
                 showlegend=True,
                 marker=dict(colors=colores)
-            ))
-
-            fig.update_layout(
-                title=f"Gráfico Circular - Predicción",
-                font=dict(size=15),
-                width=500,
-                height=500
             )
-            st.plotly_chart(fig)
-
-        st.divider()
-        st.markdown("### Descargar el archivo Predecido en Diferentes Formatos")
-        st.download_button(
-            label=":file_folder:Descargar el Archivo Excel",
-            #label="Descargar el Archivo Excel",
-            data=to_excel(df_unido),
-            file_name= 'Reporte.xlsx',
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-        st.download_button(
-            label=":file_folder:Descargar el Archivo CSV",
-            #label="Descargar el Archivo CSV",
 
-            data=csv_data,
-            file_name="reporte.csv",
-            mime="text/csv"
+        fig_pie.update_layout(
+            title="Porcentaje de Predicción de Abandono",
+            font=dict(size=15),
+            width=500,
+            height=500
         )
+
+        st.plotly_chart(fig_pie, use_container_width=True)
+
+    # ======================================================
+    # DESCARGAS
+    # ======================================================
+
+    st.divider()
+    st.markdown("### Descargar archivo con predicciones")
+
+    st.download_button(
+        label="📁 Descargar archivo Excel",
+        data=to_excel(df_unido),
+        file_name="Reporte_Prediccion_Abandono.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    st.download_button(
+        label="📁 Descargar archivo CSV",
+        data=csv_data,
+        file_name="Reporte_Prediccion_Abandono.csv",
+        mime="text/csv"
+    )
+
+
+# ==========================================================
+# EJECUTAR ESCENARIO
+# ==========================================================
 
 escenario_4()

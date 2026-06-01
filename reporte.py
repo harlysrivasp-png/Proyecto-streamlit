@@ -19,6 +19,6 @@ def reporte():
                 
     ¡Disfruta explorando el reporte y descubriendo información útil para tu análisis ''' )
     st.markdown('''
-                iframe title="Reporte Power BI- Abandono de Clientes" width="1100"height="673.5"scr="https://app.powerbi.com/groups/me/reports/5fbae260-ef74-468e-ade2-b6411''',unsafe_allow_html=True)
+                iframe title="Reporte Power BI- Abandono de Estudiantes" width="1100"height="673.5"scr="https://app.powerbi.com/groups/me/reports/5fbae260-ef74-468e-ade2-b6411''',unsafe_allow_html=True)
 reporte()
 

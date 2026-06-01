@@ -1,20 +1,27 @@
 import streamlit as st
-from sklearn.model_selection import train_test_split
+import pandas as pd
+import pickle
+
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 
+from xgboost import XGBClassifier
+
 from sklearn.metrics import (
     confusion_matrix,
     roc_curve,
     roc_auc_score,
-    accuracy_score
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    classification_report
 )
 
-import plotly.graph_objs as go
-import pandas as pd
-import pickle
+import plotly.graph_objects as go
 import plotly.figure_factory as ff
 
 
@@ -23,10 +30,7 @@ import plotly.figure_factory as ff
 # =========================================================
 
 def convert_model_to_bytes(model):
-
-    model_bytes = pickle.dumps(model)
-
-    return model_bytes
+    return pickle.dumps(model)
 
 
 # =========================================================
@@ -35,33 +39,108 @@ def convert_model_to_bytes(model):
 
 def entrenamiento():
 
-    st.markdown("# 📊 Entrenamiento de Datos")
+    st.markdown("# 🤖 Entrenamiento de Modelos de Machine Learning")
+
+    st.markdown("""
+    En este módulo se entrenan modelos de clasificación para predecir el abandono estudiantil.
+    Se utilizan las variables académicas, sociodemográficas y de interacción con el LMS para
+    estimar si un estudiante presenta riesgo de abandono.
+    """)
 
     # =====================================================
     # VALIDAR DATASET
     # =====================================================
 
-    if "df" not in st.session_state:
-
-        st.image("images/casa.png", width=300)
-
-        st.warning(
-            "Debe ingresar el dataset primero."
-        )
-
+    if "predf" in st.session_state:
+        data = st.session_state.predf.copy()
+    elif "df" in st.session_state:
+        data = st.session_state.df.copy()
+    else:
+        st.warning("Debe ingresar y preprocesar el dataset primero.")
         return
 
     # =====================================================
-    # DATASET
+    # NORMALIZAR NOMBRES DE COLUMNAS
     # =====================================================
 
-    data = st.session_state.df.copy()
+    data.columns = (
+        data.columns
+        .str.strip()
+        .str.lower()
+        .str.replace(" ", "_")
+    )
+
+    data = data.rename(
+        columns={
+            "socioeconomic_level": "socioeconomic_level",
+            "socioeconomic_level": "socioeconomic_level",
+            "socioecoNomic_level": "socioeconomic_level",
+            "task_submisSions": "task_submissions",
+            "late_submisSions": "late_submissions"
+        }
+    )
+
+    # =====================================================
+    # VALIDAR VARIABLE OBJETIVO
+    # =====================================================
+
+    if "dropout" not in data.columns:
+        st.error("No se encontró la variable objetivo 'dropout' en el dataset.")
+        st.write("Columnas disponibles:")
+        st.write(data.columns.tolist())
+        return
+
+    # =====================================================
+    # CODIFICAR DROPOUT SI VIENE COMO TEXTO
+    # =====================================================
+
+    if data["dropout"].dtype == "object":
+
+        data["dropout"] = (
+            data["dropout"]
+            .astype(str)
+            .str.strip()
+            .replace({
+                "No": 0,
+                "NO": 0,
+                "no": 0,
+                "Si": 1,
+                "SI": 1,
+                "Sí": 1,
+                "sí": 1,
+                "si": 1
+            })
+        )
+
+    data = data[data["dropout"].isin([0, 1])]
+
+    # =====================================================
+    # ELIMINAR ID SI EXISTE
+    # =====================================================
+
+    if "id" in data.columns:
+        data = data.drop(columns=["id"])
+
+    if "student_id" in data.columns:
+        data = data.drop(columns=["student_id"])
+
+    # =====================================================
+    # VALIDAR QUE TODO SEA NUMÉRICO
+    # =====================================================
+
+    columnas_object = data.select_dtypes(include="object").columns.tolist()
+
+    if len(columnas_object) > 0:
+        st.error("Existen columnas categóricas sin codificar.")
+        st.write("Debe codificar estas columnas antes de entrenar:")
+        st.write(columnas_object)
+        return
 
     # =====================================================
     # CONFIGURACIÓN
     # =====================================================
 
-    st.markdown("### Parámetros del Modelo")
+    st.markdown("### Parámetros del modelo")
 
     modelo = st.sidebar.selectbox(
         "Seleccione el modelo",
@@ -69,7 +148,8 @@ def entrenamiento():
             "Regresión Logística",
             "KNN",
             "Árbol de Decisión",
-            "Bosque Aleatorio"
+            "Bosque Aleatorio",
+            "XGBoost"
         )
     )
 
@@ -81,7 +161,7 @@ def entrenamiento():
     )
 
     train_perc = st.sidebar.slider(
-        "Porcentaje entrenamiento",
+        "Porcentaje de entrenamiento",
         50,
         90,
         80
@@ -95,10 +175,6 @@ def entrenamiento():
 
     parametros = {}
 
-    # -----------------------------------------------------
-    # REGRESIÓN LOGÍSTICA
-    # -----------------------------------------------------
-
     if modelo == "Regresión Logística":
 
         solver = st.sidebar.selectbox(
@@ -111,22 +187,12 @@ def entrenamiento():
             ("l2", "l1", None)
         )
 
-        # Validación
-
         if solver == "lbfgs" and penalty not in ["l2", None]:
-
-            st.warning(
-                "lbfgs solo soporta l2 o None"
-            )
-
+            st.warning("lbfgs solo soporta l2 o None. Se ajustó a l2.")
             penalty = "l2"
 
         if solver == "liblinear" and penalty not in ["l1", "l2"]:
-
-            st.warning(
-                "liblinear solo soporta l1 o l2"
-            )
-
+            st.warning("liblinear solo soporta l1 o l2. Se ajustó a l2.")
             penalty = "l2"
 
         C = st.sidebar.number_input(
@@ -139,7 +205,8 @@ def entrenamiento():
         modelo_entrenar = LogisticRegression(
             solver=solver,
             penalty=penalty,
-            C=C
+            C=C,
+            max_iter=1000
         )
 
         parametros = {
@@ -147,10 +214,6 @@ def entrenamiento():
             "penalty": penalty,
             "C": C
         }
-
-    # -----------------------------------------------------
-    # KNN
-    # -----------------------------------------------------
 
     elif modelo == "KNN":
 
@@ -176,10 +239,6 @@ def entrenamiento():
             "weights": weights
         }
 
-    # -----------------------------------------------------
-    # ÁRBOL DE DECISIÓN
-    # -----------------------------------------------------
-
     elif modelo == "Árbol de Decisión":
 
         criterion = st.sidebar.selectbox(
@@ -196,17 +255,14 @@ def entrenamiento():
 
         modelo_entrenar = DecisionTreeClassifier(
             criterion=criterion,
-            max_depth=max_depth
+            max_depth=max_depth,
+            random_state=randomstate
         )
 
         parametros = {
             "criterion": criterion,
             "max_depth": max_depth
         }
-
-    # -----------------------------------------------------
-    # RANDOM FOREST
-    # -----------------------------------------------------
 
     elif modelo == "Bosque Aleatorio":
 
@@ -235,38 +291,72 @@ def entrenamiento():
             "max_depth": max_depth
         }
 
+    elif modelo == "XGBoost":
+
+        n_estimators = st.sidebar.slider(
+            "N Estimators",
+            10,
+            300,
+            100
+        )
+
+        learning_rate = st.sidebar.number_input(
+            "Learning Rate",
+            min_value=0.01,
+            max_value=1.0,
+            value=0.1
+        )
+
+        max_depth = st.sidebar.slider(
+            "Max Depth",
+            1,
+            20,
+            3
+        )
+
+        modelo_entrenar = XGBClassifier(
+            n_estimators=n_estimators,
+            learning_rate=learning_rate,
+            max_depth=max_depth,
+            eval_metric="logloss",
+            random_state=randomstate
+        )
+
+        parametros = {
+            "n_estimators": n_estimators,
+            "learning_rate": learning_rate,
+            "max_depth": max_depth
+        }
+
     # =====================================================
     # MOSTRAR PARÁMETROS
     # =====================================================
 
-    st.subheader("Configuración del Entrenamiento")
-
+    st.subheader("Configuración del entrenamiento")
     st.write(parametros)
+
+    st.subheader("Vista previa del dataset de entrenamiento")
+    st.dataframe(data.head())
 
     # =====================================================
     # BOTÓN ENTRENAR
     # =====================================================
 
-    boton_entrenar = st.button(
-        "Entrenar Modelo"
-    )
-
-    if boton_entrenar:
+    if st.button("Entrenar Modelo"):
 
         model = entrenar_modelo(
-            data,
-            test_perc,
-            randomstate,
-            modelo_entrenar
+            data=data,
+            test_perc=test_perc,
+            randomstate=randomstate,
+            modelo=modelo_entrenar
         )
 
         model_data = convert_model_to_bytes(model)
 
         st.session_state.model_data = model_data
+        st.session_state.modelo_entrenado = model
 
-        st.success(
-            "Modelo entrenado correctamente"
-        )
+        st.success("Modelo entrenado correctamente.")
 
     # =====================================================
     # DESCARGAR MODELO
@@ -275,9 +365,9 @@ def entrenamiento():
     if "model_data" in st.session_state:
 
         st.download_button(
-            label="📥 Descargar Modelo",
+            label="📥 Descargar modelo_entrenado.pkl",
             data=st.session_state.model_data,
-            file_name="modelo.pkl",
+            file_name="modelo_entrenado.pkl",
             mime="application/octet-stream"
         )
 
@@ -286,22 +376,17 @@ def entrenamiento():
 # ENTRENAR MODELO
 # =========================================================
 
-def entrenar_modelo(
-    data,
-    test_perc,
-    randomstate,
-    modelo
-):
+def entrenar_modelo(data, test_perc, randomstate, modelo):
 
-    X = data.drop("Abandono", axis=1)
-
-    y = data["Abandono"]
+    X = data.drop("dropout", axis=1)
+    y = data["dropout"]
 
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
         test_size=test_perc / 100,
-        random_state=randomstate
+        random_state=randomstate,
+        stratify=y
     )
 
     model = modelo
@@ -313,28 +398,89 @@ def entrenar_modelo(
     # =====================================================
 
     y_pred_test = model.predict(X_test)
-
     y_pred_train = model.predict(X_train)
+
+    y_prob_test = model.predict_proba(X_test)[:, 1]
 
     # =====================================================
     # MÉTRICAS
     # =====================================================
 
-    col1, col2 = st.columns(2)
+    accuracy_test = accuracy_score(y_test, y_pred_test)
+    accuracy_train = accuracy_score(y_train, y_pred_train)
 
-    with col1:
+    precision = precision_score(y_test, y_pred_test, zero_division=0)
+    recall = recall_score(y_test, y_pred_test, zero_division=0)
+    f1 = f1_score(y_test, y_pred_test, zero_division=0)
+    roc_auc = roc_auc_score(y_test, y_prob_test)
 
-        st.metric(
+    cv_scores = cross_val_score(
+        model,
+        X,
+        y,
+        cv=5,
+        scoring="accuracy"
+    )
+
+    cv_mean = cv_scores.mean()
+
+    st.divider()
+    st.subheader("Métricas del modelo")
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric("Accuracy Test", f"{accuracy_test:.4f}")
+    col2.metric("Accuracy Train", f"{accuracy_train:.4f}")
+    col3.metric("Cross Validation", f"{cv_mean:.4f}")
+
+    col4, col5, col6, col7 = st.columns(4)
+
+    col4.metric("Precision", f"{precision:.4f}")
+    col5.metric("Recall", f"{recall:.4f}")
+    col6.metric("F1-score", f"{f1:.4f}")
+    col7.metric("ROC-AUC", f"{roc_auc:.4f}")
+
+    resultados = pd.DataFrame({
+        "Métrica": [
             "Accuracy Test",
-            f"{accuracy_score(y_test, y_pred_test):.2f}"
-        )
-
-    with col2:
-
-        st.metric(
             "Accuracy Train",
-            f"{accuracy_score(y_train, y_pred_train):.2f}"
-        )
+            "Precision",
+            "Recall",
+            "F1-score",
+            "ROC-AUC",
+            "Cross Validation"
+        ],
+        "Valor": [
+            accuracy_test,
+            accuracy_train,
+            precision,
+            recall,
+            f1,
+            roc_auc,
+            cv_mean
+        ]
+    })
+
+    st.dataframe(resultados)
+
+    st.divider()
+
+    # =====================================================
+    # REPORTE DE CLASIFICACIÓN
+    # =====================================================
+
+    st.subheader("Reporte de clasificación")
+
+    reporte = classification_report(
+        y_test,
+        y_pred_test,
+        output_dict=True,
+        zero_division=0
+    )
+
+    reporte_df = pd.DataFrame(reporte).transpose()
+
+    st.dataframe(reporte_df)
 
     st.divider()
 
@@ -342,11 +488,11 @@ def entrenar_modelo(
     # MATRIZ CONFUSIÓN
     # =====================================================
 
-    col3, col4 = st.columns(2)
+    col8, col9 = st.columns(2)
 
-    with col3:
+    with col8:
 
-        st.subheader("Matriz de Confusión")
+        st.subheader("Matriz de confusión")
 
         cm = confusion_matrix(
             y_test,
@@ -355,31 +501,29 @@ def entrenar_modelo(
 
         fig = ff.create_annotated_heatmap(
             z=cm,
-            x=["No", "Sí"],
-            y=["No", "Sí"],
+            x=["No abandono", "Sí abandono"],
+            y=["No abandono", "Sí abandono"],
             colorscale="YlOrBr"
         )
 
-        st.plotly_chart(fig)
+        fig.update_layout(
+            xaxis_title="Predicción",
+            yaxis_title="Valor real"
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
 
     # =====================================================
     # ROC AUC
     # =====================================================
 
-    with col4:
+    with col9:
 
         st.subheader("Curva ROC")
 
-        y_prob = model.predict_proba(X_test)[:, 1]
-
         fpr, tpr, _ = roc_curve(
             y_test,
-            y_prob
-        )
-
-        roc_auc = roc_auc_score(
-            y_test,
-            y_prob
+            y_prob_test
         )
 
         fig_roc = go.Figure()
@@ -389,7 +533,7 @@ def entrenar_modelo(
                 x=fpr,
                 y=tpr,
                 mode="lines",
-                name=f"AUC={roc_auc:.2f}"
+                name=f"AUC = {roc_auc:.4f}"
             )
         )
 
@@ -399,11 +543,17 @@ def entrenar_modelo(
                 y=[0, 1],
                 mode="lines",
                 line=dict(dash="dash"),
-                name="Aleatorio"
+                name="Clasificador aleatorio"
             )
         )
 
-        st.plotly_chart(fig_roc)
+        fig_roc.update_layout(
+            title="Curva ROC",
+            xaxis_title="False Positive Rate",
+            yaxis_title="True Positive Rate"
+        )
+
+        st.plotly_chart(fig_roc, use_container_width=True)
 
     return model
 

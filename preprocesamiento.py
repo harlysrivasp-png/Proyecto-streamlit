@@ -1,12 +1,11 @@
 import streamlit as st
 import pandas as pd
+import pickle
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
-
 from sklearn.impute import SimpleImputer
 from sklearn.impute import KNNImputer
-
 from sklearn.ensemble import IsolationForest
 
 
@@ -17,6 +16,13 @@ from sklearn.ensemble import IsolationForest
 def preprocesamiento():
 
     st.markdown("# ⚙️ Preprocesamiento de Datos")
+    st.markdown(
+        """
+        En este módulo se realiza la preparación del dataset de abandono estudiantil.
+        El usuario puede eliminar columnas, tratar valores nulos, remover valores atípicos,
+        codificar variables categóricas y escalar variables numéricas.
+        """
+    )
 
     # =====================================================
     # VALIDAR DATASET
@@ -24,83 +30,113 @@ def preprocesamiento():
 
     if "df" not in st.session_state:
 
-        st.image(
-            "images/casa.png",
-            width=300
-        )
-
-        st.warning(
-            "Debe ingresar el dataset primero."
-        )
-
+        st.warning("Debe cargar el dataset primero.")
         return
 
     # =====================================================
-    # DATASET ORIGINAL
+    # COPIA ORIGINAL
     # =====================================================
 
     if "original_df" not in st.session_state:
-
-        st.session_state.original_df = (
-            st.session_state.df.copy()
-        )
+        st.session_state.original_df = st.session_state.df.copy()
 
     if "predf" not in st.session_state:
+        st.session_state.predf = st.session_state.df.copy()
 
-        st.session_state.predf = (
-            st.session_state.df.copy()
+    data = st.session_state.predf.copy()
+
+    # =====================================================
+    # LIMPIEZA DE NOMBRES DE COLUMNAS
+    # =====================================================
+
+    st.subheader("Limpieza de nombres de columnas")
+
+    if st.button("Normalizar nombres de columnas"):
+
+        data.columns = (
+            data.columns
+            .str.strip()
+            .str.lower()
+            .str.replace(" ", "_")
         )
 
-    data = st.session_state.predf
+        # Corrección de nombres específicos del dataset
+        data = data.rename(
+            columns={
+                "socioeconomic_level": "socioeconomic_level",
+                "socioeconomic_level": "socioeconomic_level",
+                "socioeconomic_level": "socioeconomic_level",
+                "socioecoNomic_level": "socioeconomic_level",
+                "task_submisSions": "task_submissions",
+                "late_submisSions": "late_submissions"
+            }
+        )
+
+        st.session_state.predf = data
+        st.success("Nombres de columnas normalizados correctamente.")
+        st.dataframe(data.head())
+
+    st.divider()
 
     # =====================================================
     # RESTABLECER DATASET
     # =====================================================
 
-    st.markdown(
-        "### Restablecer Dataset"
-    )
+    st.subheader("Restablecer Dataset")
 
-    reset_button = st.button(
-        "Restablecer Preprocesado"
-    )
+    if st.button("Restablecer Preprocesado"):
 
-    if reset_button:
+        st.session_state.predf = st.session_state.original_df.copy()
+        data = st.session_state.predf.copy()
 
-        st.session_state.predf = (
-            st.session_state.original_df.copy()
-        )
-
-        data = st.session_state.predf
-
-        st.success(
-            "Dataset restablecido correctamente"
-        )
+        st.success("Dataset restablecido correctamente.")
 
     st.divider()
 
     # =====================================================
-    # ELIMINAR COLUMNAS
+    # ELIMINAR COLUMNA ID
+    # =====================================================
+
+    st.subheader("Eliminar identificador")
+
+    if "id" in data.columns:
+
+        if st.button("Eliminar columna id"):
+
+            data = data.drop(columns=["id"])
+            st.session_state.predf = data
+
+            st.success("Columna id eliminada correctamente.")
+            st.dataframe(data.head())
+
+    else:
+        st.info("La columna id no se encuentra en el dataset actual.")
+
+    st.divider()
+
+    # =====================================================
+    # ELIMINAR COLUMNAS MANUALMENTE
     # =====================================================
 
     st.subheader("Eliminar Columnas")
 
     columnas_eliminar = st.multiselect(
-        "Seleccione columnas",
+        "Seleccione columnas a eliminar",
         data.columns
     )
 
-    if st.button("Eliminar Columnas"):
+    if st.button("Eliminar Columnas Seleccionadas"):
 
-        data = data.drop(
-            columns=columnas_eliminar
-        )
+        if len(columnas_eliminar) > 0:
 
-        st.session_state.predf = data
+            data = data.drop(columns=columnas_eliminar)
+            st.session_state.predf = data
 
-        st.success("Columnas eliminadas")
+            st.success("Columnas eliminadas correctamente.")
+            st.dataframe(data.head())
 
-        st.dataframe(data.head())
+        else:
+            st.warning("No seleccionó columnas para eliminar.")
 
     st.divider()
 
@@ -108,46 +144,42 @@ def preprocesamiento():
     # VALORES NULOS CATEGÓRICOS
     # =====================================================
 
-    st.subheader(
-        "Valores Nulos Categóricos"
-    )
+    st.subheader("Valores Nulos Categóricos")
 
     variables_cat = st.multiselect(
-        "Variables categóricas",
-        data.select_dtypes(
-            include="object"
-        ).columns
+        "Seleccione variables categóricas",
+        data.select_dtypes(include="object").columns
     )
 
     metodo_cat = st.selectbox(
-        "Método categórico",
+        "Método de imputación categórica",
         ["most_frequent", "constant"]
     )
 
     fill_value = None
 
     if metodo_cat == "constant":
-
-        fill_value = st.text_input(
-            "Valor de reemplazo"
-        )
+        fill_value = st.text_input("Valor de reemplazo")
 
     if st.button("Reemplazar Nulos Categóricos"):
 
-        imputer = SimpleImputer(
-            strategy=metodo_cat,
-            fill_value=fill_value
-        )
+        if len(variables_cat) > 0:
 
-        data[variables_cat] = imputer.fit_transform(
-            data[variables_cat]
-        )
+            imputer = SimpleImputer(
+                strategy=metodo_cat,
+                fill_value=fill_value
+            )
 
-        st.session_state.predf = data
+            data[variables_cat] = imputer.fit_transform(
+                data[variables_cat]
+            )
 
-        st.success(
-            "Valores categóricos reemplazados"
-        )
+            st.session_state.predf = data
+
+            st.success("Valores categóricos reemplazados correctamente.")
+
+        else:
+            st.warning("Seleccione al menos una variable categórica.")
 
     st.divider()
 
@@ -155,19 +187,15 @@ def preprocesamiento():
     # VALORES NULOS NUMÉRICOS
     # =====================================================
 
-    st.subheader(
-        "Valores Nulos Numéricos"
-    )
+    st.subheader("Valores Nulos Numéricos")
 
     variables_num = st.multiselect(
-        "Variables numéricas",
-        data.select_dtypes(
-            include=["int64", "float64"]
-        ).columns
+        "Seleccione variables numéricas",
+        data.select_dtypes(include=["int64", "float64"]).columns
     )
 
     metodo_num = st.selectbox(
-        "Método numérico",
+        "Método de imputación numérica",
         ["SimpleImputer", "KNNImputer"]
     )
 
@@ -175,11 +203,7 @@ def preprocesamiento():
 
         estrategia = st.selectbox(
             "Estrategia",
-            [
-                "mean",
-                "median",
-                "most_frequent"
-            ]
+            ["mean", "median", "most_frequent"]
         )
 
     else:
@@ -193,29 +217,30 @@ def preprocesamiento():
 
     if st.button("Reemplazar Nulos Numéricos"):
 
-        if metodo_num == "SimpleImputer":
+        if len(variables_num) > 0:
 
-            imputer = SimpleImputer(
-                strategy=estrategia
-            )
+            if metodo_num == "SimpleImputer":
 
-        else:
+                imputer = SimpleImputer(
+                    strategy=estrategia
+                )
 
-            imputer = KNNImputer(
-                n_neighbors=vecinos
-            )
+            else:
 
-        data[variables_num] = (
-            imputer.fit_transform(
+                imputer = KNNImputer(
+                    n_neighbors=vecinos
+                )
+
+            data[variables_num] = imputer.fit_transform(
                 data[variables_num]
             )
-        )
 
-        st.session_state.predf = data
+            st.session_state.predf = data
 
-        st.success(
-            "Valores numéricos reemplazados"
-        )
+            st.success("Valores numéricos reemplazados correctamente.")
+
+        else:
+            st.warning("Seleccione al menos una variable numérica.")
 
     st.divider()
 
@@ -223,72 +248,59 @@ def preprocesamiento():
     # ELIMINAR ATÍPICOS
     # =====================================================
 
-    st.subheader(
-        "Eliminar Valores Atípicos"
-    )
+    st.subheader("Eliminar Valores Atípicos")
 
     variables_outliers = st.multiselect(
-        "Variables para outliers",
-        data.select_dtypes(
-            include=["int64", "float64"]
-        ).columns
+        "Seleccione variables para detectar outliers",
+        data.select_dtypes(include=["int64", "float64"]).columns
     )
 
     metodo_outlier = st.selectbox(
-        "Método",
+        "Método de detección de outliers",
         ["Boxplot", "Isolation Forest"]
     )
 
     if st.button("Eliminar Atípicos"):
 
-        # -------------------------------------------------
-        # BOXPLOT
-        # -------------------------------------------------
+        if len(variables_outliers) > 0:
 
-        if metodo_outlier == "Boxplot":
+            if metodo_outlier == "Boxplot":
 
-            for col in variables_outliers:
+                for col in variables_outliers:
 
-                Q1 = data[col].quantile(0.25)
+                    Q1 = data[col].quantile(0.25)
+                    Q3 = data[col].quantile(0.75)
+                    IQR = Q3 - Q1
 
-                Q3 = data[col].quantile(0.75)
+                    inferior = Q1 - 1.5 * IQR
+                    superior = Q3 + 1.5 * IQR
 
-                IQR = Q3 - Q1
+                    data = data[
+                        (data[col] >= inferior) &
+                        (data[col] <= superior)
+                    ]
 
-                inferior = Q1 - 1.5 * IQR
+            else:
 
-                superior = Q3 + 1.5 * IQR
+                iso = IsolationForest(
+                    contamination=0.05,
+                    random_state=42
+                )
 
-                data = data[
-                    (data[col] >= inferior)
-                    &
-                    (data[col] <= superior)
-                ]
+                pred = iso.fit_predict(
+                    data[variables_outliers]
+                )
 
-        # -------------------------------------------------
-        # ISOLATION FOREST
-        # -------------------------------------------------
+                data = data[pred == 1]
+
+            st.session_state.predf = data
+
+            st.success("Valores atípicos eliminados correctamente.")
+            st.write("Dimensiones actuales:", data.shape)
+            st.dataframe(data.head())
 
         else:
-
-            iso = IsolationForest(
-                contamination=0.05,
-                random_state=42
-            )
-
-            pred = iso.fit_predict(
-                data[variables_outliers]
-            )
-
-            data = data[pred == 1]
-
-        st.session_state.predf = data
-
-        st.success(
-            "Valores atípicos eliminados"
-        )
-
-        st.dataframe(data.head())
+            st.warning("Seleccione al menos una variable para analizar outliers.")
 
     st.divider()
 
@@ -296,47 +308,84 @@ def preprocesamiento():
     # ELIMINAR FILAS VACÍAS
     # =====================================================
 
-    st.subheader(
-        "Eliminar Filas Vacías"
-    )
+    st.subheader("Eliminar Filas Vacías")
 
     if st.button("Eliminar Filas con NaN"):
 
         data = data.dropna()
-
         st.session_state.predf = data
 
-        st.success(
-            "Filas eliminadas correctamente"
-        )
+        st.success("Filas con valores NaN eliminadas correctamente.")
+        st.write("Dimensiones actuales:", data.shape)
 
     st.divider()
 
     # =====================================================
-    # LABEL ENCODER
+    # CODIFICACIÓN DE VARIABLE OBJETIVO
     # =====================================================
 
-    st.subheader(
-        "Codificación de Variables"
-    )
+    st.subheader("Codificar Variable Objetivo")
+
+    if "dropout" in data.columns:
+
+        if st.button("Codificar dropout"):
+
+            data["dropout"] = (
+                data["dropout"]
+                .astype(str)
+                .str.strip()
+                .replace({
+                    "No": 0,
+                    "NO": 0,
+                    "no": 0,
+                    "Si": 1,
+                    "SI": 1,
+                    "Sí": 1,
+                    "sí": 1,
+                    "si": 1
+                })
+            )
+
+            st.session_state.predf = data
+
+            st.success("Variable dropout codificada: No = 0, Si = 1.")
+            st.dataframe(data[["dropout"]].head())
+
+    else:
+        st.info("No se encontró la variable dropout.")
+
+    st.divider()
+
+    # =====================================================
+    # LABEL ENCODER PARA VARIABLES CATEGÓRICAS
+    # =====================================================
+
+    st.subheader("Codificación de Variables Categóricas")
 
     if st.button("Aplicar LabelEncoder"):
 
-        le = LabelEncoder()
+        encoders = {}
 
-        for col in data.select_dtypes(
-            include="object"
-        ).columns:
+        columnas_object = data.select_dtypes(include="object").columns
+
+        for col in columnas_object:
+
+            le = LabelEncoder()
 
             data[col] = le.fit_transform(
-                data[col]
+                data[col].astype(str)
             )
 
-        st.session_state.predf = data
+            encoders[col] = le
 
-        st.success(
-            "Variables codificadas"
-        )
+        st.session_state.predf = data
+        st.session_state.encoders = encoders
+
+        with open("encoders.pkl", "wb") as archivo:
+            pickle.dump(encoders, archivo)
+
+        st.success("Variables categóricas codificadas y encoders guardados.")
+        st.dataframe(data.head())
 
     st.divider()
 
@@ -344,30 +393,46 @@ def preprocesamiento():
     # ESCALADO
     # =====================================================
 
-    st.subheader(
-        "Escalado de Variables"
-    )
+    st.subheader("Escalado de Variables Numéricas")
 
     columnas_scaler = st.multiselect(
-        "Variables para StandardScaler",
-        data.select_dtypes(
-            include=["int64", "float64"]
-        ).columns
+        "Seleccione variables para StandardScaler",
+        [
+            col for col in data.select_dtypes(
+                include=["int64", "float64"]
+            ).columns
+            if col != "dropout"
+        ]
     )
 
     if st.button("Aplicar StandardScaler"):
 
-        scaler = StandardScaler()
+        if len(columnas_scaler) > 0:
 
-        data[columnas_scaler] = scaler.fit_transform(
-            data[columnas_scaler]
-        )
+            scaler = StandardScaler()
 
-        st.session_state.predf = data
+            data[columnas_scaler] = scaler.fit_transform(
+                data[columnas_scaler]
+            )
 
-        st.success(
-            "Escalado realizado correctamente"
-        )
+            st.session_state.predf = data
+            st.session_state.scaler = scaler
+            st.session_state.columnas_scaler = columnas_scaler
+
+            with open("scaler.pkl", "wb") as archivo:
+                pickle.dump(
+                    {
+                        "scaler": scaler,
+                        "columnas_scaler": columnas_scaler
+                    },
+                    archivo
+                )
+
+            st.success("Escalado realizado correctamente y scaler guardado.")
+            st.dataframe(data.head())
+
+        else:
+            st.warning("Seleccione al menos una variable para escalar.")
 
     st.divider()
 
@@ -375,12 +440,28 @@ def preprocesamiento():
     # MOSTRAR DATASET FINAL
     # =====================================================
 
-    st.subheader(
-        "Dataset Procesado"
-    )
+    st.subheader("Dataset Procesado")
 
-    st.dataframe(
-        st.session_state.predf.head()
+    st.write("Dimensiones del dataset procesado:")
+    st.write(st.session_state.predf.shape)
+
+    st.dataframe(st.session_state.predf.head())
+
+    # =====================================================
+    # DESCARGAR DATASET PROCESADO
+    # =====================================================
+
+    st.subheader("Descargar Dataset Procesado")
+
+    csv = st.session_state.predf.to_csv(
+        index=False
+    ).encode("utf-8")
+
+    st.download_button(
+        label="📥 Descargar datos_preprocesados.csv",
+        data=csv,
+        file_name="datos_preprocesados.csv",
+        mime="text/csv"
     )
 
 
