@@ -38,4 +38,4 @@ def prediccion():
     elif opcion == "Escenario 4: Cargar modelo y archivo CSV":
         escenario4()
 
-prediccion() 
+
