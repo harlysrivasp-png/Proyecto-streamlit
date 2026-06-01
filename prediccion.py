@@ -1,9 +1,9 @@
 import streamlit as st
 
-from escenario1 import escenario_1
-from escenario2 import escenario_2
-from escenario3 import escenario_3
-from escenario4 import escenario_4
+from escenario1 import escenario1
+from escenario2 import escenario2
+from escenario3 import escenario3
+from escenario4 import escenario4
 
 
 def prediccion():
@@ -27,13 +27,15 @@ def prediccion():
     )
 
     if opcion == "Escenario 1: Predicción manual con modelo fijo":
-        escenario_1()
+        escenario1()
 
     elif opcion == "Escenario 2: Predicción masiva con modelo fijo":
-        escenario_2()
+        escenario2()
 
     elif opcion == "Escenario 3: Cargar modelo y predicción manual":
-        escenario_3()
+        escenario3()
 
     elif opcion == "Escenario 4: Cargar modelo y archivo CSV":
-        escenario_4()
+        escenario4()
+
+prediccion() 

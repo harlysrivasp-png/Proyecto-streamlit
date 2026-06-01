@@ -178,4 +178,3 @@ def escenario1():
     st.write(df_resultado)
 
 
-escenario1()
