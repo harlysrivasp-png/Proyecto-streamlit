@@ -27,7 +27,7 @@ def to_excel(df):
 # ESCENARIO 2: PREDICCIÓN MASIVA DESDE CSV
 # ==========================================================
 
-def escenario_2():
+def escenario2():
 
     st.markdown("## Escenario 2: Predicción Masiva de Abandono de Estudiantes")
 
@@ -302,7 +302,7 @@ def escenario_2():
 # EJECUTAR ESCENARIO
 # ==========================================================
 
-escenario_2()
+escenario2()
 
 
 

@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 
-def escenario_1():
+def escenario1():
     st.markdown("## Escenario 1: Predicción Manual de Abandono de Estudiantes")
 
     st.markdown("""
@@ -178,4 +178,4 @@ def escenario_1():
     st.write(df_resultado)
 
 
-escenario_1()
+escenario1()

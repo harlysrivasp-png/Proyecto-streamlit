@@ -8,6 +8,7 @@ st.set_page_config(page_title= 'App de Predicción',
                    page_icon='images/customer-rating.png',
                    layout='wide',
                    initial_sidebar_state='expanded')
+
 def login():
     with open('config.yaml') as file:
         config= yaml.load(file,Loader=SafeLoader)

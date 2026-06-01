@@ -36,7 +36,7 @@ def obtener_columnas_modelo(modelo):
 # ESCENARIO 4: CARGAR MODELO Y CSV PARA PREDICCIÓN MASIVA
 # ==========================================================
 
-def escenario_4():
+def escenario4():
 
     st.markdown("## Escenario 4: Predicción Masiva con Modelo Cargado")
 
@@ -341,4 +341,4 @@ def escenario_4():
 # EJECUTAR ESCENARIO
 # ==========================================================
 
-escenario_4()
+escenario4()

@@ -9,7 +9,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 # ESCENARIO 3: CARGAR MODELO Y PREDICCIÓN MANUAL
 # ==========================================================
 
-def escenario_3():
+def escenario3():
 
     st.markdown("## Escenario 3: Cargar Modelo y Realizar Predicción Manual")
 
@@ -282,4 +282,4 @@ def escenario_3():
 # EJECUTAR ESCENARIO
 # ==========================================================
 
-escenario_3()
+escenario3()
