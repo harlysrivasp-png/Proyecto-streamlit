@@ -9,11 +9,11 @@ def cargar_archivo():
     )
 
     st.markdown("""
-    ## Aplicación de Predicción de Abandono Estudiantil
+    ## 🎓 Aplicación de Predicción de Abandono Estudiantil
 
     Esta herramienta permite cargar un dataset de estudiantes para realizar
     análisis exploratorio, preprocesamiento, entrenamiento y predicción de abandono.
-    ## Usuario responsable
+    ## 👤 Usuario responsable
     Esta aplicación es una herramienta de demostración para revisión académica y evaluación de apoyo a la toma de decisiones. Debe usarse bajo los siguientes principios:
 
     - Las predicciones deben apoyar la intervención académica preventiva, no la acción punitiva.
