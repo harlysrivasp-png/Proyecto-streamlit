@@ -13,6 +13,15 @@ def cargar_archivo():
 
     Esta herramienta permite cargar un dataset de estudiantes para realizar
     análisis exploratorio, preprocesamiento, entrenamiento y predicción de abandono.
+    ## Usuario responsable
+    Esta aplicación es una herramienta de demostración para revisión académica y evaluación de apoyo a la toma de decisiones. Debe usarse bajo los siguientes principios:
+
+    - Las predicciones deben apoyar la intervención académica preventiva, no la acción punitiva.
+    - El modelo no debe sustituir el juicio de los asesores ni el seguimiento institucional.
+    - Los datos de los estudiantes deben anonimizarse o seudonimizarse siempre que sea posible.
+    - El acceso debe restringirse al personal académico autorizado.
+    - Los resultados del modelo deben interpretarse junto con el contexto del estudiante.
+    - Las explicaciones de SHAP indican asociaciones aprendidas, no relaciones causales.          
     """)
 
     uploaded_file = st.file_uploader(
